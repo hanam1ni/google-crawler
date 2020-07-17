@@ -27,4 +27,3 @@ jobs:
         run: mix format
       - name: Run Tests
         run: mix test
-        
