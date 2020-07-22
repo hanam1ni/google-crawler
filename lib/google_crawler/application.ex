@@ -14,7 +14,9 @@ defmodule GoogleCrawler.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: GoogleCrawler.PubSub},
       # Start the Endpoint (http/https)
-      GoogleCrawlerWeb.Endpoint
+      GoogleCrawlerWeb.Endpoint,
+      # Start scraper supervisor
+      GoogleCrawler.Scraper.Supervisor
       # Start a worker by calling: GoogleCrawler.Worker.start_link(arg)
       # {GoogleCrawler.Worker, arg}
     ]

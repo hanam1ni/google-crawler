@@ -24,6 +24,7 @@ defmodule GoogleCrawler.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import GoogleCrawler.DataCase
+      import GoogleCrawler.Factory
     end
   end
 

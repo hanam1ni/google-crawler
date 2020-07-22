@@ -25,7 +25,7 @@ defmodule GoogleCrawler.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -38,13 +38,20 @@ defmodule GoogleCrawler.MixProject do
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:httpoison, "~> 1.6"},
+      # Development
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      # Test
+      {:ex_machina, "~> 2.4", only: :test},
+      {:faker, "~> 0.14", only: :test},
+      {:mimic, "~> 1.3", only: :test},
+      {:exvcr, "~> 0.11", only: :test}
     ]
   end
 
