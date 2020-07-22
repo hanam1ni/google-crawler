@@ -1,0 +1,42 @@
+<div class="row justify-content-end">  
+  <div class="col-auto">
+    <a href=<%= Routes.keyword_path(@conn, :new) %>>
+      <button type="button" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Keyword
+      </button>
+    </a>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col">
+    <table class="table table-hover table-keyword">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Keyword</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for keyword <- @keywords do %>
+          <tr>
+            <td><%= keyword.id %></td>
+            <td><%= keyword.title %></td>
+            <td><%= formatted_status(keyword.status) %></td>
+            <td><%= keyword.inserted_at %></td>
+            <td class="actionable">
+              <%= link to: Routes.keyword_path(@conn, :show, keyword), class: "btn btn-success actionable__item" do %>
+                <i class="fas fa-info"></i>
+              <% end %>
+              <%= link to: Routes.keyword_path(@conn, :delete, keyword), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger actionable__item" do %>
+                <i class="fas fa-trash-alt"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

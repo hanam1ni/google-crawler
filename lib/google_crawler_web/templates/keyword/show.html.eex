@@ -1,0 +1,26 @@
+<div class="row justify-content-end">
+  <div class="col-auto">
+    <%= link to: Routes.keyword_path(@conn, :delete, @keyword), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" do %>
+      <i class="fas fa-trash-alt"></i>  Delete keyword
+    <% end %>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col">
+    <p>ID: <%= @keyword.id %></p>
+    <p>Title: <%= @keyword.title %></p>
+    <p>Created At: <%= @keyword.inserted_at %></p>
+    <p>
+      <%= if @keyword.result_page_html == nil do %>
+        <button class="btn btn-secondary" role="button">Searching</button>
+      <% else %>
+        <a class="btn btn-primary" data-toggle="collapse" href="#searchResult" role="button" aria-expanded="false">Search Result</a>
+      <% end %>
+    </p>
+    <div class="collapse" id="searchResult">
+      <div class="card card-body">
+        <%= @keyword.result_page_html %>
+      </div>
+    </div>
+  </div>
+</div>

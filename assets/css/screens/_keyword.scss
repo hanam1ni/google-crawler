@@ -1,0 +1,18 @@
+body.keyword.index {
+  .table-keyword {
+    td {
+      vertical-align: middle;
+    }
+
+    .actionable {
+      &__item {
+        width: rem(40px);
+        height: rem(40px);
+      }
+
+      &__item:not(:last-child) {
+        margin-right: rem(8px);
+      }
+    }
+  }
+}

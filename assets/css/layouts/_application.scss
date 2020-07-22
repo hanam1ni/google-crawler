@@ -1,0 +1,19 @@
+.layout-default {
+  header nav {
+    display: flex;
+    justify-content: space-between;
+
+    padding: rem(16px 40px);
+  }
+
+  .navbar {
+    &__logo {
+      color: inherit; 
+      text-decoration: inherit;
+    }
+  }
+
+  main {
+    padding: rem(40px 0);
+  }
+}
