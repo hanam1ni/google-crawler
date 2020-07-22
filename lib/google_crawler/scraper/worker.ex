@@ -31,6 +31,10 @@ defmodule GoogleCrawler.Scraper.Worker do
           |> Ecto.Changeset.change(result_page_html: body)
           |> Repo.update!()
           |> mark_as_completed
+
+        {:error} ->
+          keyword
+          |> mark_as_failed
       end
 
       :timer.sleep(@delay_interval)
@@ -47,9 +51,11 @@ defmodule GoogleCrawler.Scraper.Worker do
     headers = ["user-agent": @user_agent]
 
     HTTPoison.start()
+
     HTTPoison.get("#{@base_url}#{encoded_title}", headers)
     |> case do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> {:ok, body}
+      _ -> {:error}
     end
   end
 
@@ -62,6 +68,12 @@ defmodule GoogleCrawler.Scraper.Worker do
   defp mark_as_completed(keyword) do
     keyword
     |> Ecto.Changeset.change(status: Keyword.statuses().scrape_completed)
+    |> Repo.update!()
+  end
+
+  defp mark_as_failed(keyword) do
+    keyword
+    |> Ecto.Changeset.change(status: Keyword.statuses().scrape_failed)
     |> Repo.update!()
   end
 end
