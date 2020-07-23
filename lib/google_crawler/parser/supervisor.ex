@@ -11,8 +11,8 @@ defmodule GoogleCrawler.Parser.Supervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def start_child(keywords) do
-    child_spec = {ParserWorker, keywords}
+  def start_child(keyword) do
+    child_spec = {ParserWorker, keyword}
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end

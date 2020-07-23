@@ -1,7 +1,7 @@
 defmodule GoogleCrawler.Parser.Worker do
   use GenServer, restart: :transient
 
-  alias GoogleCrawler.Parser
+  alias GoogleCrawler.Keyword
   alias GoogleCrawler.SearchResult
   alias GoogleCrawler.Repo
 
@@ -24,6 +24,8 @@ defmodule GoogleCrawler.Parser.Worker do
   def handle_cast({:generate}, {keyword}) do
     parse(keyword)
     |> save_result(keyword)
+
+    mark_as_completed(keyword)
 
     {:noreply, {keyword}}
   end
@@ -73,5 +75,11 @@ defmodule GoogleCrawler.Parser.Worker do
 
       Map.merge(%{url: result_url, title: title}, optional_params)
     end)
+  end
+
+  defp mark_as_completed(keyword) do
+    keyword
+    |> Ecto.Changeset.change(status: Keyword.statuses().parse_completed)
+    |> Repo.update!()
   end
 end
