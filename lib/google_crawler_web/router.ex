@@ -7,6 +7,7 @@ defmodule GoogleCrawlerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug GoogleCrawlerWeb.Plugs.Authentication
   end
 
   pipeline :api do
@@ -20,6 +21,14 @@ defmodule GoogleCrawlerWeb.Router do
 
     resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
   end
+
+  scope "/auth", GoogleCrawlerWeb do
+    pipe_through :browser
+
+    delete "/", AuthController, :delete
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+end
 
   # Other scopes may use custom stacks.
   # scope "/api", GoogleCrawlerWeb do

@@ -14,6 +14,11 @@
         <a class="navbar__logo" href="<%= Routes.keyword_path(@conn, :index) %>">
           <h1>GoogleCrawler</h1>
         </a>
+        <%= if @conn.assigns[:user] do %>
+          <%= link "Sign Out", to: Routes.auth_path(@conn, :delete), class: "btn btn-danger", method: :delete %>
+        <% else %>
+          <%= link "Sign In with Google", to: Routes.auth_path(@conn, :request, "google"), class: "btn btn-primary" %>
+        <% end %>
       </nav>
     </header>
     <main role="main" class="container">
