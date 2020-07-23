@@ -7,6 +7,9 @@ defmodule GoogleCrawlerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :authentication do
     plug GoogleCrawlerWeb.Plugs.Authentication
   end
 
@@ -18,6 +21,11 @@ defmodule GoogleCrawlerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/", GoogleCrawlerWeb do
+    pipe_through :browser
+    pipe_through :authentication
 
     resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
   end

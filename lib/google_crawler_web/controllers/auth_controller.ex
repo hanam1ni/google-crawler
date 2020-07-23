@@ -17,7 +17,7 @@ defmodule GoogleCrawlerWeb.AuthController do
     conn
     |> clear_session()
     |> put_flash(:info, "Successfully signed out")
-    |> redirect(to: Routes.keyword_path(conn, :index))
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 
   defp signin(conn, changeset) do

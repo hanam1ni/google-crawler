@@ -4,6 +4,7 @@ defmodule GoogleCrawlerWeb.Plugs.Authentication do
 
   alias GoogleCrawler.Repo
   alias GoogleCrawler.User
+  alias GoogleCrawlerWeb.Router.Helpers, as: Routes
 
   def init(default), do: default
 
@@ -16,6 +17,11 @@ defmodule GoogleCrawlerWeb.Plugs.Authentication do
 
       true ->
         assign(conn, :user, nil)
+        
+        conn
+        |> put_flash(:error, "You must log in to continue")
+        |> redirect(to: Routes.page_path(conn, :index))
+        |> halt
     end
   end
 end
