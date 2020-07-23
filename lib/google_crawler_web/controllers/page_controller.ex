@@ -1,6 +1,8 @@
 defmodule GoogleCrawlerWeb.PageController do
   use GoogleCrawlerWeb, :controller
 
+  plug :put_layout, "landing.html"
+
   alias GoogleCrawler.Repo
   alias GoogleCrawler.User
 

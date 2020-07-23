@@ -1,0 +1,6 @@
+<h1 class="landing-title">GoogleCrawler</h1>
+<p class="landing-subtitle">Web application for scraping Google result from given keyword and generating report.</p>
+<%= link to: Routes.auth_path(@conn, :request, "google"), class: "sign-in-btn btn btn-primary" do %>
+  <i class="sign-in-btn__icon fab fa-google"></i>
+  <span class="sign-in-btn__label">Sign In with Google</span>
+<% end %>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html class="layout-landing" lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GoogleCrawler · Phoenix Framework</title>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </head>
+  <body class="<%= page_class_name(@conn) %>" >
+    <main role="main" class="container">
+      <%
+        info = get_flash(@conn, :info)
+        error = get_flash(@conn, :error)
+      %>
+      <%= if info do %>
+        <p class="alert alert-info" role="alert"><%= info %></p>
+      <% end %>
+      <%= if error do %>
+        <p class="alert alert-danger" role="alert"><%= error %></p>
+      <% end %>
+
+      <%= @inner_content %>
+    </main>
+  </body>
+</html>
