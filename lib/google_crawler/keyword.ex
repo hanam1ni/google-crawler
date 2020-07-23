@@ -6,7 +6,7 @@ defmodule GoogleCrawler.Keyword do
     initial: "initial",
     scraping: "scraping",
     scrape_completed: "scrape_completed",
-    scrape_failed: "scrape_failed"
+    scrape_failed: "scrape_failed",
     parsing: "parsing",
     parse_completed: "parse_completed",
     parse_failed: "parse_failed"
