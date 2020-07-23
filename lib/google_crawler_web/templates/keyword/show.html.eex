@@ -5,11 +5,36 @@
     <% end %>
   </div>
 </div>
+<div class="row">
+  <div class="col">
+  <h1><%= @keyword.title %></h1>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-4">
+    <div class="keyword-card card">
+      <div class="keyword-card__header card-header"><i class="keyword-card__icon keyword-card__icon--info fas fa-info-circle"></i><strong>Keyword Info</strong></div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">ID: <%= @keyword.id %></li>
+        <li class="list-group-item">Status: <%= formatted_status(@keyword.status) %></li>
+        <li class="list-group-item">Created At: <%= @keyword.inserted_at %></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-4">
+    <div class="keyword-card card">
+      <div class="keyword-card__header card-header"><i class="keyword-card__icon keyword-card__icon--report fas fa-file-alt"></i><strong>Result Report</strong></div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Result Count: <%= @keyword.result_count %></li>
+        <li class="list-group-item">Total Ad Count: <%= @keyword.ad_count %></li>
+        <li class="list-group-item">Top Ad Count: <%= @keyword.top_ad_count %></li>
+      </ul>
+    </div>
+  </div>
+</div>
 <div class="row mt-3">
   <div class="col">
-    <p>ID: <%= @keyword.id %></p>
-    <p>Title: <%= @keyword.title %></p>
-    <p>Created At: <%= @keyword.inserted_at %></p>
     <p>
       <%= if @keyword.result_page_html == nil do %>
         <button class="btn btn-secondary" role="button">Searching</button>
@@ -17,10 +42,53 @@
         <a class="btn btn-primary" data-toggle="collapse" href="#searchResult" role="button" aria-expanded="false">Search Result</a>
       <% end %>
     </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
     <div class="collapse" id="searchResult">
       <div class="card card-body">
         <%= @keyword.result_page_html %>
       </div>
     </div>
+    <div class="collapse" id="searchResult">
+      <div class="card card-body">
+        <%= @keyword.result_page_html %>
+      </div>
+    </div>
+    <table class="table table-hover table-search-result">
+      <thead>
+        <tr>
+          <th class="table-search-result__header table-search-result__header--xs">ID</th>
+          <th class="table-search-result__header table-search-result__header--lg">Title</th>
+          <th class="table-search-result__header table-search-result__header--xl">Url</th>
+          <th class="table-search-result__header table-search-result__header--sm">Is Ads</th>
+          <th class="table-search-result__header table-search-result__header--sm">Is Top Ads</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for search_result <- @keyword.search_results do %>
+          <tr>
+            <td><%= search_result.id %></td>
+            <td><%= search_result.title %></td>
+            <td><%= search_result.url %></td>
+            <td>
+              <%= if search_result.is_ad do %>
+                <i class="table-search-result__icon table-search-result__icon--checked fas fa-check-circle"></i>
+              <% else %>
+                <i class="table-search-result__icon table-search-result__icon--cross fas fa-times-circle"></i>
+              <% end %>
+            </td>
+            <td>
+              <%= if search_result.is_top_ad do %>
+                <i class="table-search-result__icon table-search-result__icon--checked fas fa-check-circle"></i>
+              <% else %>
+                <i class="table-search-result__icon table-search-result__icon--cross fas fa-times-circle"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
