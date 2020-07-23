@@ -22,10 +22,17 @@ defmodule GoogleCrawler.Parser.Worker do
   end
 
   def handle_cast({:generate}, {keyword}) do
-    parse(keyword)
-    |> save_result(keyword)
+    keyword
+    |> mark_as_parsing
+    |> parse
+    |> case do
+      {:ok, result_params} ->
+        save_result(result_params, keyword)
+        mark_as_completed(keyword)
 
-    mark_as_completed(keyword)
+      {:error} ->
+        mark_as_failed(keyword)
+    end
 
     {:noreply, {keyword}}
   end
@@ -43,9 +50,15 @@ defmodule GoogleCrawler.Parser.Worker do
     Floki.parse_document(keyword.result_page_html)
     |> case do
       {:ok, document} ->
-        result_to_params([], document, @top_ad_selector, %{is_ad: true, is_top_ad: true})
-        |> result_to_params(document, @ad_selector, %{is_ad: true})
-        |> result_to_params(document, @result_selector)
+        result_params =
+          result_to_params([], document, @top_ad_selector, %{is_ad: true, is_top_ad: true})
+          |> result_to_params(document, @ad_selector, %{is_ad: true})
+          |> result_to_params(document, @result_selector)
+
+        {:ok, result_params}
+
+      _ ->
+        {:error}
     end
   end
 
@@ -77,9 +90,21 @@ defmodule GoogleCrawler.Parser.Worker do
     end)
   end
 
+  defp mark_as_parsing(keyword) do
+    keyword
+    |> Ecto.Changeset.change(status: Keyword.statuses().parsing)
+    |> Repo.update!()
+  end
+
   defp mark_as_completed(keyword) do
     keyword
     |> Ecto.Changeset.change(status: Keyword.statuses().parse_completed)
+    |> Repo.update!()
+  end
+
+  defp mark_as_failed(keyword) do
+    keyword
+    |> Ecto.Changeset.change(status: Keyword.statuses().parse_failed)
     |> Repo.update!()
   end
 end
