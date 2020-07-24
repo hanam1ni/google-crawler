@@ -49,6 +49,7 @@ defmodule GoogleCrawler.MixProject do
       {:poison, "~> 3.1"},
       {:ueberauth, "~> 0.6"},
       {:ueberauth_google, "~> 0.9"},
+      {:csv, "~> 2.3"},
       # Development
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       # Test

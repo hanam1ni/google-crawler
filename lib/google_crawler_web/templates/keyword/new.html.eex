@@ -1,11 +1,30 @@
 <div class="row">
-  <div class="col">
-    <%= form_for @keyword, Routes.keyword_path(@conn, :create), fn f -> %>
-      <div class="form-group">
-        <%= label f, :title %>
-        <%= text_input f, :title, class: "form-control", placeholder: "Enter keyword" %>
+  <div class="col-5">
+    <div class="keyword-form-card card">
+      <div class="card-header"><strong>Add single keyword</strong></div>
+      <div class="card-body">
+        <%= form_for @keyword, Routes.keyword_path(@conn, :create), fn f -> %>
+          <div class="form-group">
+            <%= label f, :title %>
+            <%= text_input f, :title, class: "form-control", placeholder: "Enter keyword" %>
+          </div>
+          <%= submit "Submit", class: "btn btn-primary" %>
+        <% end %>
       </div>
-      <%= submit "Submit", class: "btn btn-primary" %>
-    <% end %>
+    </div>
+  </div>
+  <div class="col-5">
+    <div class="keyword-form-card card">
+        <div class="card-header"><strong>Add multiple keywords</strong></div>
+        <div class="card-body">
+          <%= form_for @conn, Routes.keyword_import_path(@conn, :import), [multipart: true], fn f -> %>
+            <div class="form-group">
+              <%= label f, :keywords, "Upload list of keyword in CSV format" %>
+              <%= file_input f, :keywords, class: "btn btn-secondary" %>
+            </div>
+            <%= submit "Submit", class: "btn btn-primary" %>
+          <% end %>
+      </div>
+    </div>
   </div>
 </div>
