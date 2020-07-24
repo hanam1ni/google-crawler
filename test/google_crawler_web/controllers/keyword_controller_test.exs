@@ -70,6 +70,27 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
     end
   end
 
+  describe "import/2" do
+    test "creates the keywords from uploaded keywords", %{conn: conn} do
+      user = insert(:user)
+      uploaded_keywords = %Plug.Upload{
+        path: "test/support/fixtures/data/keywords.csv",
+        filename: "keywords.csv"
+      }
+
+      GoogleCrawler.Scraper.Supervisor
+      |> stub(:start_child, fn keyword -> keyword end)
+
+      conn
+      |> login_as(user)
+      |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_keywords})
+
+      keywords = Keyword |> Repo.all()
+
+      assert length(keywords) == 3
+    end
+  end
+
   describe "delete/2" do
     test "deletes the given keyword", %{conn: conn} do
       user = insert(:user)
