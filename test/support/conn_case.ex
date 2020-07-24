@@ -41,4 +41,8 @@ defmodule GoogleCrawlerWeb.ConnCase do
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  def login_as(conn, user) do
+    conn |> Plug.Test.init_test_session(%{user_id: user.id})
+  end
 end

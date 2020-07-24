@@ -3,9 +3,6 @@ defmodule GoogleCrawlerWeb.PageController do
 
   plug :put_layout, "landing.html"
 
-  alias GoogleCrawler.Repo
-  alias GoogleCrawler.User
-
   def index(conn, _params) do
     user_id = get_session(conn, :user_id)
 

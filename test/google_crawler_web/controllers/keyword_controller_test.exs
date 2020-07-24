@@ -9,9 +9,13 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
   describe "index/2" do
     test "renders the keyword list", %{conn: conn} do
+      user = insert(:user)
       keywords = insert_list(2, :keyword)
 
-      conn = get(conn, Routes.keyword_path(conn, :index))
+      conn =
+        conn
+        |> login_as(user)
+        |> get(Routes.keyword_path(conn, :index))
 
       keyword1 = Enum.fetch!(keywords, 0)
       keyword2 = Enum.fetch!(keywords, 1)
@@ -22,9 +26,13 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
   describe "show/2" do
     test "renders the given keyword", %{conn: conn} do
+      user = insert(:user)
       keyword = insert(:completed_scraped_keyword)
 
-      conn = get(conn, Routes.keyword_path(conn, :show, keyword))
+      conn =
+        conn
+        |> login_as(user)
+        |> get(Routes.keyword_path(conn, :show, keyword))
 
       assert html_response(conn, 200) =~ "#{keyword.title}"
       assert html_response(conn, 200) =~ "#{keyword.result_page_html}"
@@ -33,34 +41,43 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
   describe "create/2" do
     test "creates the keyword", %{conn: conn} do
+      user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
       GoogleCrawler.Scraper.Supervisor
       |> stub(:start_child, fn keyword -> keyword end)
 
-      post(conn, Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
+      conn
+      |> login_as(user)
+      |> post(Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
 
       created_keyword = Keyword |> Repo.all() |> Enum.fetch!(0)
 
       assert created_keyword.title == keyword_title
-      assert created_keyword.status == Keyword.statuses.initial
+      assert created_keyword.status == Keyword.statuses().initial
     end
 
     test "starts the scraping worker with given keyword", %{conn: conn} do
+      user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
       GoogleCrawler.Scraper.Supervisor
       |> expect(:start_child, fn [%Keyword{title: ^keyword_title}] = keyword -> keyword end)
 
-      post(conn, Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
+      conn
+      |> login_as(user)
+      |> post(Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
     end
   end
 
   describe "delete/2" do
     test "deletes the given keyword", %{conn: conn} do
+      user = insert(:user)
       keyword = insert(:completed_scraped_keyword)
 
-      delete(conn, Routes.keyword_path(conn, :delete, keyword))
+      conn
+      |> login_as(user)
+      |> delete(Routes.keyword_path(conn, :delete, keyword))
 
       keywords = Keyword |> Repo.all()
 
