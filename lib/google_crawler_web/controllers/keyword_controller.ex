@@ -8,6 +8,8 @@ defmodule GoogleCrawlerWeb.KeywordController do
   alias GoogleCrawler.Repo
   alias GoogleCrawler.Scraper.Supervisor, as: ScraperSupervisor
 
+  @keywords_per_chunk 10
+
   def index(conn, _params) do
     keywords =
       Keyword
@@ -66,7 +68,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
         {:ok, keyword} -> keyword
       end
     end)
-    |> Enum.chunk_every(10)
+    |> Enum.chunk_every(@keywords_per_chunk)
     |> Enum.each(fn keyword_set -> ScraperSupervisor.start_child(keyword_set) end)
 
     conn
