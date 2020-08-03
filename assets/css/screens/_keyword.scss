@@ -16,3 +16,65 @@ body.keyword.index {
     }
   }
 }
+
+body.keyword.show {
+  .keyword-card {
+    &__header {
+      display: flex;
+      align-items: center;
+    }
+    
+    &__icon {
+      width: rem(24px);
+      height: rem(24px);
+      margin-right: rem(6px);
+
+      &--info {
+        color: var(--blue);
+      }
+
+      &--report {
+        color: var(--yellow);
+      }
+    }
+  }
+
+  .table-search-result {
+    &__header {
+      &--xs {
+        width: 5%;
+      }
+
+      &--sm {
+        width: 15%;
+      }
+
+      &--lg {
+        width: 30%;
+      }
+
+      &--xl {
+        width: 40%;
+      }
+    }
+
+    td {
+      vertical-align: middle;
+
+      word-break:break-all;
+    }
+
+    &__icon {
+      width: rem(26px);
+      height: rem(26px);
+
+      &--checked {
+        color: var(--green)
+      }
+
+      &--cross {
+        color: var(--red)
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 defmodule GoogleCrawler.Keyword do
   use Ecto.Schema
+  
   import Ecto.Changeset
+  import Ecto.Query
 
   @statuses %{
     initial: "initial",
@@ -17,6 +19,13 @@ defmodule GoogleCrawler.Keyword do
     field :result_page_html, :string
     field :status, :string, default: @statuses.initial
 
+    # Result report
+    field :result_count, :integer, virtual: true
+    field :ad_count, :integer, virtual: true
+    field :top_ad_count, :integer, virtual: true
+
+    has_many :search_results, GoogleCrawler.SearchResult
+
     timestamps()
   end
 
@@ -31,5 +40,16 @@ defmodule GoogleCrawler.Keyword do
 
   def statuses do
     @statuses
+  end
+
+  def with_result_report(keyword_query) do
+    keyword_query
+    |> join(:left, [keyword], search_results in assoc(keyword, :search_results))
+    |> group_by([keyword], keyword.id)
+    |> select_merge([_, search_results], %{
+      result_count: count(search_results.id),
+      ad_count: fragment("sum(?::int)", search_results.is_ad),
+      top_ad_count: fragment("sum(?::int)", search_results.is_top_ad)
+    })
   end
 end

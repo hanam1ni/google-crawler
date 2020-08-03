@@ -12,6 +12,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
     keywords =
       Keyword
       |> Ecto.Query.order_by([:id])
+      |> Keyword.with_result_report()
       |> Repo.all()
 
     render(conn, "index.html", keywords: keywords)
@@ -24,7 +25,11 @@ defmodule GoogleCrawlerWeb.KeywordController do
   end
 
   def show(conn, %{"id" => keyword_id}) do
-    keyword = Repo.get!(Keyword, keyword_id)
+    keyword =
+      Keyword 
+      |> Keyword.with_result_report
+      |> Repo.get!(keyword_id)
+      |> Repo.preload([:search_results])
 
     render(conn, "show.html", keyword: keyword)
   end

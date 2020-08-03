@@ -16,6 +16,9 @@
           <th>Keyword</th>
           <th>Status</th>
           <th>Created At</th>
+          <th>Result Count</th>
+          <th>Ad Count</th>
+          <th>Top Ad Count</th>
           <th></th>
         </tr>
       </thead>
@@ -26,6 +29,9 @@
             <td><%= keyword.title %></td>
             <td><%= formatted_status(keyword.status) %></td>
             <td><%= keyword.inserted_at %></td>
+            <td><%= keyword.result_count %></td>
+            <td><%= keyword.ad_count %></td>
+            <td><%= keyword.top_ad_count %></td>
             <td class="actionable">
               <%= link to: Routes.keyword_path(@conn, :show, keyword), class: "btn btn-success actionable__item" do %>
                 <i class="fas fa-info"></i>
