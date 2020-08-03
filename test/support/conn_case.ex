@@ -23,6 +23,7 @@ defmodule GoogleCrawlerWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import GoogleCrawlerWeb.ConnCase
+      import GoogleCrawler.Factory
 
       alias GoogleCrawlerWeb.Router.Helpers, as: Routes
 
