@@ -17,6 +17,8 @@ defmodule GoogleCrawlerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
   end
 
   # Other scopes may use custom stacks.

@@ -13,3 +13,5 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 import "phoenix_html"
+import "bootstrap.native"
+import "@fortawesome/fontawesome-free/js/all"
