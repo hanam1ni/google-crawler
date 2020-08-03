@@ -9,6 +9,10 @@ defmodule GoogleCrawlerWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :authentication do
+    plug GoogleCrawlerWeb.Plugs.Authentication
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -17,9 +21,22 @@ defmodule GoogleCrawlerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/", GoogleCrawlerWeb do
+    pipe_through :browser
+    pipe_through :authentication
 
     resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
   end
+
+  scope "/auth", GoogleCrawlerWeb do
+    pipe_through :browser
+
+    delete "/", AuthController, :delete
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+end
 
   # Other scopes may use custom stacks.
   # scope "/api", GoogleCrawlerWeb do

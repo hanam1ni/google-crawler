@@ -20,7 +20,7 @@ defmodule GoogleCrawler.MixProject do
   def application do
     [
       mod: {GoogleCrawler.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ueberauth_google]
     ]
   end
 
@@ -47,6 +47,8 @@ defmodule GoogleCrawler.MixProject do
       {:httpoison, "~> 1.6"},
       {:floki, "~> 0.27.0"},
       {:poison, "~> 3.1"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_google, "~> 0.9"},
       # Development
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       # Test

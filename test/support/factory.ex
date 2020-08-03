@@ -3,4 +3,5 @@ defmodule GoogleCrawler.Factory do
   
   use GoogleCrawler.KeywordFactory
   use GoogleCrawler.SearchResultFactory
+  use GoogleCrawler.UserFactory
 end

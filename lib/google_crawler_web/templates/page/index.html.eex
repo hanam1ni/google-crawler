@@ -1,38 +1,6 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace-of-mind from prototype to production</p>
-</section>
-
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
-</section>
+<h1 class="landing-title">GoogleCrawler</h1>
+<p class="landing-subtitle">Web application for scraping Google result from given keyword and generating report.</p>
+<%= link to: Routes.auth_path(@conn, :request, "google"), class: "sign-in-btn btn btn-primary" do %>
+  <i class="sign-in-btn__icon fab fa-google"></i>
+  <span class="sign-in-btn__label">Sign In with Google</span>
+<% end %>

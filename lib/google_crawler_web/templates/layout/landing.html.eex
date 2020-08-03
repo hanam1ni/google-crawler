@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="layout-default" lang="en">
+<html class="layout-landing" lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -9,18 +9,6 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body class="<%= page_class_name(@conn) %>" >
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar__logo" href="<%= Routes.keyword_path(@conn, :index) %>">
-          <h1>GoogleCrawler</h1>
-        </a>
-        <%= if @conn.assigns[:user] do %>
-          <%= link "Sign Out", to: Routes.auth_path(@conn, :delete), class: "btn btn-danger", method: :delete %>
-        <% else %>
-          <%= link "Sign In with Google", to: Routes.auth_path(@conn, :request, "google"), class: "btn btn-primary" %>
-        <% end %>
-      </nav>
-    </header>
     <main role="main" class="container">
       <%
         info = get_flash(@conn, :info)
