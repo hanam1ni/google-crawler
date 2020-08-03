@@ -3,6 +3,7 @@ defmodule GoogleCrawler.Scraper.Worker do
 
   alias GoogleCrawler.Repo
   alias GoogleCrawler.Keyword
+  alias GoogleCrawler.Parser.Supervisor, as: ParserSupervisor
 
   @delay_interval 100
   @user_agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
@@ -31,6 +32,7 @@ defmodule GoogleCrawler.Scraper.Worker do
           |> Ecto.Changeset.change(result_page_html: body)
           |> Repo.update!()
           |> mark_as_completed
+          |> ParserSupervisor.start_child
 
         {:error} ->
           keyword
