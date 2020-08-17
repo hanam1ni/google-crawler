@@ -6,4 +6,12 @@ defmodule GoogleCrawlerWeb.KeywordView do
     |> String.capitalize
     |> String.replace("_", " ")
   end
+
+  def formatted_result_count(count) do
+    if count do
+      count
+    else
+      "-"
+    end
+  end
 end

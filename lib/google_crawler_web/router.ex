@@ -13,6 +13,10 @@ defmodule GoogleCrawlerWeb.Router do
     plug GoogleCrawlerWeb.Plugs.Authentication
   end
 
+  pipeline :authentication do
+    plug GoogleCrawlerWeb.Plugs.Authentication
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -28,6 +32,7 @@ defmodule GoogleCrawlerWeb.Router do
     pipe_through :authentication
 
     resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
+    post "/keyword/import", KeywordController, :import, as: :keyword_import
   end
 
   scope "/auth", GoogleCrawlerWeb do

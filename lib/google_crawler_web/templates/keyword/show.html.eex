@@ -26,9 +26,9 @@
     <div class="keyword-card card">
       <div class="keyword-card__header card-header"><i class="keyword-card__icon keyword-card__icon--report fas fa-file-alt"></i><strong>Result Report</strong></div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Result Count: <%= @keyword.result_count %></li>
-        <li class="list-group-item">Total Ad Count: <%= @keyword.ad_count %></li>
-        <li class="list-group-item">Top Ad Count: <%= @keyword.top_ad_count %></li>
+        <li class="list-group-item">Result Count: <%= formatted_result_count(@keyword.result_count) %></li>
+        <li class="list-group-item">Total Ad Count: <%= formatted_result_count(@keyword.ad_count) %></li>
+        <li class="list-group-item">Top Ad Count: <%= formatted_result_count(@keyword.top_ad_count) %></li>
       </ul>
     </div>
   </div>

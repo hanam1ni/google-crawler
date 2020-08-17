@@ -8,6 +8,8 @@ defmodule GoogleCrawlerWeb.KeywordController do
   alias GoogleCrawler.Repo
   alias GoogleCrawler.Scraper.Supervisor, as: ScraperSupervisor
 
+  @keywords_per_chunk 10
+
   def index(conn, _params) do
     keywords =
       Keyword
@@ -52,6 +54,26 @@ defmodule GoogleCrawlerWeb.KeywordController do
         conn
         |> redirect(to: Routes.keyword_path(conn, :new))
     end
+  end
+
+  def import(conn, %{"keywords" => keywords}) do
+    keywords.path
+    |> File.stream!()
+    |> CSV.decode!()
+    |> Enum.map(fn [keyword_title] ->
+      %Keyword{}
+      |> Keyword.changeset(%{title: keyword_title})
+      |> Repo.insert()
+      |> case do
+        {:ok, keyword} -> keyword
+      end
+    end)
+    |> Enum.chunk_every(@keywords_per_chunk)
+    |> Enum.each(fn keyword_set -> ScraperSupervisor.start_child(keyword_set) end)
+
+    conn
+    |> put_flash(:info, "Keyword uploaded successfully.")
+    |> redirect(to: Routes.keyword_path(conn, :index))
   end
 
   def delete(conn, %{"id" => keyword_id}) do
