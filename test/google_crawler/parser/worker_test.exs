@@ -3,7 +3,7 @@ defmodule GoogleCrawler.Parser.WorkerTest do
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
   alias GoogleCrawler.Keyword
-  alias GoogleCrawler.SearchResult
+  alias GoogleCrawler.SearchResults.SearchResult
   alias GoogleCrawler.Repo
   alias GoogleCrawler.Parser.Worker
 
@@ -13,7 +13,7 @@ defmodule GoogleCrawler.Parser.WorkerTest do
       [%{"response" => %{"body" => result_html_body}}] = Poison.decode!(response)
 
       keyword = insert(:completed_scraped_keyword, result_page_html: result_html_body)
-      
+
       assert {:ok, worker_pid} = Worker.start_link(keyword)
       ensure_worker_stop(worker_pid)
 
@@ -21,7 +21,7 @@ defmodule GoogleCrawler.Parser.WorkerTest do
       search_result = Repo.all(SearchResult)
 
       assert length(search_result) == 17
-      assert keyword.status == Keyword.statuses.parse_completed
+      assert keyword.status == Keyword.statuses().parse_completed
     end
   end
 

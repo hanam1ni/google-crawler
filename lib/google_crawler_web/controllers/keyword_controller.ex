@@ -1,56 +1,39 @@
 defmodule GoogleCrawlerWeb.KeywordController do
-  require Logger
-  require Ecto.Query
-
   use GoogleCrawlerWeb, :controller
 
-  alias GoogleCrawler.Keyword
-  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Keywords
+  alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Scraper.Supervisor, as: ScraperSupervisor
 
-  @keywords_per_chunk 10
-
   def index(conn, _params) do
-    keywords =
-      Keyword
-      |> Ecto.Query.order_by([:id])
-      |> Keyword.with_result_report()
-      |> Repo.all()
+    keywords = Keywords.list_keywords(conn.assigns.user.id)
 
     render(conn, "index.html", keywords: keywords)
   end
 
   def new(conn, _params) do
-    keyword = Keyword.changeset(%Keyword{}, %{})
+    keyword = Keyword.create_changeset(%Keyword{}, %{})
 
     render(conn, "new.html", keyword: keyword)
   end
 
   def show(conn, %{"id" => keyword_id}) do
-    keyword =
-      Keyword 
-      |> Keyword.with_result_report
-      |> Repo.get!(keyword_id)
-      |> Repo.preload([:search_results])
+    keyword = Keywords.get_keyword_by_id(keyword_id)
 
     render(conn, "show.html", keyword: keyword)
   end
 
   def create(conn, %{"keyword" => keyword_params}) do
-    %Keyword{}
-    |> Keyword.changeset(keyword_params)
-    |> Repo.insert()
+    Keywords.create_keyword(conn.assigns.user, keyword_params)
     |> case do
       {:ok, keyword} ->
-        ScraperSupervisor.start_child([keyword])
+        Keywords.scrape_keyword()
 
         conn
         |> put_flash(:info, "Keyword created successfully.")
         |> redirect(to: Routes.keyword_path(conn, :show, keyword))
 
-      {:error, changeset} ->
-        Logger.info(inspect(changeset.errors))
-
+      {:error, _changeset} ->
         conn
         |> redirect(to: Routes.keyword_path(conn, :new))
     end
@@ -60,16 +43,14 @@ defmodule GoogleCrawlerWeb.KeywordController do
     keywords.path
     |> File.stream!()
     |> CSV.decode!()
-    |> Enum.map(fn [keyword_title] ->
-      %Keyword{}
-      |> Keyword.changeset(%{title: keyword_title})
-      |> Repo.insert()
+    |> Enum.each(fn [keyword_title] ->
+      Keywords.create_keyword(conn.assigns.user, %{title: keyword_title})
       |> case do
         {:ok, keyword} -> keyword
       end
     end)
-    |> Enum.chunk_every(@keywords_per_chunk)
-    |> Enum.each(fn keyword_set -> ScraperSupervisor.start_child(keyword_set) end)
+
+    Keywords.scrape_keyword()
 
     conn
     |> put_flash(:info, "Keyword uploaded successfully.")
@@ -77,18 +58,14 @@ defmodule GoogleCrawlerWeb.KeywordController do
   end
 
   def delete(conn, %{"id" => keyword_id}) do
-    keyword = Repo.get!(Keyword, keyword_id)
-
-    Repo.delete(keyword)
+    Keywords.delete_keyword(keyword_id)
     |> case do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Keyword deleted successfully.")
         |> redirect(to: Routes.keyword_path(conn, :index))
 
-      {:error, keyword} ->
-        Logger.info(inspect(keyword))
-
+      {:error, _keyword} ->
         conn
         |> redirect(to: Routes.keyword_path(conn, :index))
     end

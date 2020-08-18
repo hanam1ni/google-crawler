@@ -1,13 +1,13 @@
-defmodule GoogleCrawler.KeywordFactory do  
+defmodule GoogleCrawler.KeywordFactory do
   alias GoogleCrawler.Keyword
 
   defmacro __using__(_opts) do
     quote do
       def keyword_factory do
         %Keyword{
-          title: Faker.Lorem.word,
+          title: Faker.Lorem.word(),
           result_page_html: nil,
-          status: Keyword.statuses.initial
+          status: Keyword.statuses().initial
         }
       end
 
@@ -15,8 +15,8 @@ defmodule GoogleCrawler.KeywordFactory do
         struct!(
           keyword_factory(),
           %{
-            result_page_html: Faker.Lorem.paragraph,
-            status: Keyword.statuses.scrape_completed
+            result_page_html: Faker.Lorem.paragraph(),
+            status: Keyword.statuses().scrape_completed
           }
         )
       end

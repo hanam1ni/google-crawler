@@ -13,14 +13,6 @@ defmodule GoogleCrawlerWeb.Router do
     plug GoogleCrawlerWeb.Plugs.Authentication
   end
 
-  pipeline :authentication do
-    plug GoogleCrawlerWeb.Plugs.Authentication
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", GoogleCrawlerWeb do
     pipe_through :browser
 
@@ -41,7 +33,7 @@ defmodule GoogleCrawlerWeb.Router do
     delete "/", AuthController, :delete
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
-end
+  end
 
   # Other scopes may use custom stacks.
   # scope "/api", GoogleCrawlerWeb do

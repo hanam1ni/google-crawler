@@ -21,5 +21,5 @@ config :google_crawler, GoogleCrawlerWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-config :exvcr, 
+config :exvcr,
   vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes"

@@ -1,6 +1,6 @@
 defmodule GoogleCrawlerWeb.LayoutView do
   use GoogleCrawlerWeb, :view
-  
+
   def page_class_name(conn) do
     "#{module_class_name(conn)} #{action_name(conn)}"
   end

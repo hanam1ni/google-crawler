@@ -17,7 +17,7 @@ defmodule GoogleCrawlerWeb.Plugs.Authentication do
 
       true ->
         assign(conn, :user, nil)
-        
+
         conn
         |> put_flash(:error, "You must log in to continue")
         |> redirect(to: Routes.page_path(conn, :index))

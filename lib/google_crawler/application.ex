@@ -16,9 +16,9 @@ defmodule GoogleCrawler.Application do
       # Start the Endpoint (http/https)
       GoogleCrawlerWeb.Endpoint,
       # Start scraper supervisor
-      GoogleCrawler.Scraper.Supervisor,
+      GoogleCrawler.Keywords.ScraperSupervisor,
       # Start parser supervisor
-      GoogleCrawler.Parser.Supervisor
+      GoogleCrawler.SearchResults.ParserSupervisor
       # Start a worker by calling: GoogleCrawler.Worker.start_link(arg)
       # {GoogleCrawler.Worker, arg}
     ]

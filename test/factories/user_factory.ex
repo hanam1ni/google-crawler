@@ -1,13 +1,13 @@
-defmodule GoogleCrawler.UserFactory do  
+defmodule GoogleCrawler.UserFactory do
   alias GoogleCrawler.User
 
   defmacro __using__(_opts) do
     quote do
       def user_factory do
         %User{
-          email: Faker.Internet.email,
+          email: Faker.Internet.email(),
           provider: "google",
-          token: Faker.UUID.v4
+          token: Faker.UUID.v4()
         }
       end
     end

@@ -1,14 +1,14 @@
-defmodule GoogleCrawler.Parser.Worker do
+defmodule GoogleCrawler.SearchResults.ParserWorker do
   use GenServer, restart: :transient
 
-  alias GoogleCrawler.Keyword
-  alias GoogleCrawler.SearchResult
-  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Keywords
+  alias GoogleCrawler.Keywords.Keyword
+  alias GoogleCrawler.SearchResults
 
-  @top_ad_selector "#taw .ads-ad a"
-  @ad_selector "#bottomads .ads-ad a"
+  @top_ad_selector "#taw .ads-fr a"
+  @ad_selector "#bottomads .ads-fr a"
   @result_selector "#search .rc a"
-  @result_title_selector "h3"
+  @result_title_selector ["h3", "div"]
   @result_url_property "href"
 
   # Client Interface
@@ -25,15 +25,15 @@ defmodule GoogleCrawler.Parser.Worker do
 
   def handle_cast({:generate}, {keyword}) do
     keyword
-    |> mark_as_parsing
+    |> Keywords.update_keyword_status(Keyword.statuses().parsing)
     |> parse_result_page
     |> case do
       {:ok, result_params} ->
         save_result(result_params, keyword)
-        mark_as_completed(keyword)
+        Keywords.update_keyword_status(keyword, Keyword.statuses().parse_completed)
 
       {:error} ->
-        mark_as_failed(keyword)
+        Keywords.update_keyword_status(keyword, Keyword.statuses().parse_failed)
     end
 
     {:noreply, {keyword}}
@@ -41,10 +41,7 @@ defmodule GoogleCrawler.Parser.Worker do
 
   defp save_result(result_params, keyword) do
     Enum.map(result_params, fn params ->
-      %SearchResult{}
-      |> SearchResult.changeset(params)
-      |> Ecto.Changeset.put_assoc(:keyword, keyword)
-      |> Repo.insert()
+      SearchResults.create_search_result(keyword, params)
     end)
   end
 
@@ -80,7 +77,7 @@ defmodule GoogleCrawler.Parser.Worker do
   defp filter_valid_result(document) do
     document
     |> Enum.filter(fn {_tag, _attributes, child_node} ->
-      Floki.find(child_node, @result_title_selector) != []
+      Floki.find(child_node, Enum.join(@result_title_selector, ",")) != []
     end)
   end
 
@@ -91,27 +88,9 @@ defmodule GoogleCrawler.Parser.Worker do
         Enum.find(attributes, fn {property, _} -> property == @result_url_property end)
 
       {_tag, _attributes, [title | _]} =
-        Enum.find(child_node, fn {tag, _, _} -> tag == @result_title_selector end)
+        Enum.find(child_node, fn {tag, _, _} -> Enum.member?(@result_title_selector, tag) end)
 
       Map.merge(%{url: result_url, title: title}, optional_params)
     end)
-  end
-
-  defp mark_as_parsing(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().parsing)
-    |> Repo.update!()
-  end
-
-  defp mark_as_completed(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().parse_completed)
-    |> Repo.update!()
-  end
-
-  defp mark_as_failed(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().parse_failed)
-    |> Repo.update!()
   end
 end

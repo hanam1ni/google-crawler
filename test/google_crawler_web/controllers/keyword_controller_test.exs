@@ -73,6 +73,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   describe "import/2" do
     test "creates the keywords from uploaded keywords", %{conn: conn} do
       user = insert(:user)
+
       uploaded_keywords = %Plug.Upload{
         path: "test/support/fixtures/data/keywords.csv",
         filename: "keywords.csv"

@@ -7,6 +7,8 @@ defmodule GoogleCrawler.User do
     field :provider, :string
     field :token, :string
 
+    has_many :keywords, GoogleCrawler.Keywords.Keyword
+
     timestamps()
   end
 
