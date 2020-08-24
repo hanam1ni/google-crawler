@@ -1,12 +1,12 @@
-defmodule GoogleCrawler.SearchResultFactory do  
-  alias GoogleCrawler.SearchResult
+defmodule GoogleCrawler.SearchResults.SearchResultFactory do
+  alias GoogleCrawler.SearchResults.SearchResult
 
   defmacro __using__(_opts) do
     quote do
       def search_result_factory do
         %SearchResult{
-          url: Faker.Internet.domain_name,
-          title: Faker.Lorem.word,
+          url: Faker.Internet.domain_name(),
+          title: Faker.Lorem.word(),
           is_ad: false,
           is_top_ad: false
         }

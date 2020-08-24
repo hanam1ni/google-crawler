@@ -3,7 +3,7 @@ defmodule GoogleCrawlerWeb.KeywordView do
 
   def formatted_status(status) do
     status
-    |> String.capitalize
+    |> String.capitalize()
     |> String.replace("_", " ")
   end
 

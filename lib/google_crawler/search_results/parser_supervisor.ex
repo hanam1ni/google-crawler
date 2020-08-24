@@ -1,7 +1,7 @@
-defmodule GoogleCrawler.Parser.Supervisor do
+defmodule GoogleCrawler.SearchResults.ParserSupervisor do
   use DynamicSupervisor
 
-  alias GoogleCrawler.Parser.Worker, as: ParserWorker
+  alias GoogleCrawler.SearchResults.ParserWorker
 
   def start_link(_init_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)

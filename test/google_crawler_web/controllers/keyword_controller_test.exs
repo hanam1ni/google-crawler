@@ -1,16 +1,15 @@
 defmodule GoogleCrawlerWeb.KeywordControllerTest do
-  use GoogleCrawlerWeb.ConnCase
-  use Mimic
+  use GoogleCrawlerWeb.ConnCase, async: true
 
-  Mimic.copy(GoogleCrawler.Scraper.Supervisor)
-
-  alias GoogleCrawler.Keyword
+  alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Repo
 
   describe "index/2" do
-    test "renders the keyword list", %{conn: conn} do
+    test "renders the keywords for the given user", %{conn: conn} do
       user = insert(:user)
-      keywords = insert_list(2, :keyword)
+      other_user = insert(:user)
+      keywords = insert_list(2, :keyword, user: user)
+      other_user_keyword = insert(:keyword, user: other_user, title: "Other user keyword")
 
       conn =
         conn
@@ -21,13 +20,14 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       keyword2 = Enum.fetch!(keywords, 1)
       assert html_response(conn, 200) =~ "#{keyword1.title}"
       assert html_response(conn, 200) =~ "#{keyword2.title}"
+      refute html_response(conn, 200) =~ "#{other_user_keyword.title}"
     end
   end
 
   describe "show/2" do
     test "renders the given keyword", %{conn: conn} do
       user = insert(:user)
-      keyword = insert(:completed_scraped_keyword)
+      keyword = insert(:completed_scraped_keyword, user: user)
 
       conn =
         conn
@@ -44,7 +44,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> stub(:start_child, fn keyword -> keyword end)
 
       conn
@@ -57,11 +57,11 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       assert created_keyword.status == Keyword.statuses().initial
     end
 
-    test "starts the scraping worker with given keyword", %{conn: conn} do
+    test "starts the scraper worker with given keyword", %{conn: conn} do
       user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> expect(:start_child, fn [%Keyword{title: ^keyword_title}] = keyword -> keyword end)
 
       conn
@@ -73,12 +73,13 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   describe "import/2" do
     test "creates the keywords from uploaded keywords", %{conn: conn} do
       user = insert(:user)
+
       uploaded_keywords = %Plug.Upload{
         path: "test/support/fixtures/data/keywords.csv",
         filename: "keywords.csv"
       }
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> stub(:start_child, fn keyword -> keyword end)
 
       conn
@@ -94,7 +95,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   describe "delete/2" do
     test "deletes the given keyword", %{conn: conn} do
       user = insert(:user)
-      keyword = insert(:completed_scraped_keyword)
+      keyword = insert(:completed_scraped_keyword, user: user)
 
       conn
       |> login_as(user)

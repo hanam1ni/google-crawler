@@ -1,5 +1,5 @@
 defmodule GoogleCrawlerWeb.PageControllerTest do
-  use GoogleCrawlerWeb.ConnCase
+  use GoogleCrawlerWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

@@ -1,13 +1,17 @@
-defmodule GoogleCrawler.Scraper.SupervisorTest do
+defmodule GoogleCrawler.Keywords.ScraperSupervisorTest do
   use GoogleCrawler.DataCase
 
-  alias GoogleCrawler.Scraper.Supervisor
+  alias GoogleCrawler.Keywords.ScraperSupervisor
+  alias GoogleCrawler.SearchResults.ParserSupervisor
 
   describe "start_child/1" do
     test "starts the scraping worker" do
       keywords = insert_list(2, :keyword)
 
-      assert {:ok, worker_pid} = Supervisor.start_child(keywords)
+      ParserSupervisor
+      |> stub(:start_child, fn keyword -> keyword end)
+
+      assert {:ok, worker_pid} = ScraperSupervisor.start_child(keywords)
       assert is_pid(worker_pid)
 
       ensure_worker_stop(worker_pid)

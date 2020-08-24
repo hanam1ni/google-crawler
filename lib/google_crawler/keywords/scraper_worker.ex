@@ -1,9 +1,9 @@
-defmodule GoogleCrawler.Scraper.Worker do
+defmodule GoogleCrawler.Keywords.ScraperWorker do
   use GenServer, restart: :transient
 
-  alias GoogleCrawler.Repo
-  alias GoogleCrawler.Keyword
-  alias GoogleCrawler.Parser.Supervisor, as: ParserSupervisor
+  alias GoogleCrawler.Keywords
+  alias GoogleCrawler.Keywords.Keyword
+  alias GoogleCrawler.SearchResults.ParserSupervisor
 
   @delay_interval 100
   @user_agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"
@@ -24,19 +24,17 @@ defmodule GoogleCrawler.Scraper.Worker do
   def handle_cast({:scrape}, {keywords}) do
     Enum.each(keywords, fn keyword ->
       keyword
-      |> mark_as_scraping
+      |> Keywords.update_keyword_status(Keyword.statuses().scraping)
       |> fetch_result
       |> case do
         {:ok, body} ->
-          keyword
-          |> Ecto.Changeset.change(result_page_html: body)
-          |> Repo.update!()
-          |> mark_as_completed
-          |> ParserSupervisor.start_child
+          Keywords.update_keyword_result(keyword, body)
+          |> case do
+            {:ok, keyword} -> ParserSupervisor.start_child(keyword)
+          end
 
         {:error} ->
-          keyword
-          |> mark_as_failed
+          Keywords.update_keyword_status(keyword, Keyword.statuses().scrape_failed)
       end
 
       :timer.sleep(@delay_interval)
@@ -59,23 +57,5 @@ defmodule GoogleCrawler.Scraper.Worker do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> {:ok, body}
       _ -> {:error}
     end
-  end
-
-  defp mark_as_scraping(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().scraping)
-    |> Repo.update!()
-  end
-
-  defp mark_as_completed(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().scrape_completed)
-    |> Repo.update!()
-  end
-
-  defp mark_as_failed(keyword) do
-    keyword
-    |> Ecto.Changeset.change(status: Keyword.statuses().scrape_failed)
-    |> Repo.update!()
   end
 end

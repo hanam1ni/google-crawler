@@ -1,8 +1,7 @@
-defmodule GoogleCrawler.Keyword do
+defmodule GoogleCrawler.Keywords.Keyword do
   use Ecto.Schema
-  
+
   import Ecto.Changeset
-  import Ecto.Query
 
   @statuses %{
     initial: "initial",
@@ -24,32 +23,33 @@ defmodule GoogleCrawler.Keyword do
     field :ad_count, :integer, virtual: true
     field :top_ad_count, :integer, virtual: true
 
-    has_many :search_results, GoogleCrawler.SearchResult
+    belongs_to :user, GoogleCrawler.User
+    has_many :search_results, GoogleCrawler.SearchResults.SearchResult
 
     timestamps()
   end
 
   @doc false
-  def changeset(keyword, attrs) do
+  def create_changeset(keyword \\ %__MODULE__{}, attrs) do
     keyword
-    |> cast(attrs, [:title, :result_page_html])
+    |> cast(attrs, [:title])
     |> validate_required([:title])
-    |> unique_constraint(:title)
+    |> assoc_constraint(:user)
+    |> unique_constraint([:title, :user_id])
+  end
+
+  def update_result_page_html_changeset(keyword \\ %__MODULE__{}, result_page_html) do
+    keyword
+    |> change(result_page_html: result_page_html)
+  end
+
+  def update_status_changeset(keyword \\ %__MODULE__{}, status) do
+    keyword
+    |> change(status: status)
     |> validate_inclusion(:status, Map.values(@statuses))
   end
 
   def statuses do
     @statuses
-  end
-
-  def with_result_report(keyword_query) do
-    keyword_query
-    |> join(:left, [keyword], search_results in assoc(keyword, :search_results))
-    |> group_by([keyword], keyword.id)
-    |> select_merge([_, search_results], %{
-      result_count: count(search_results.id),
-      ad_count: fragment("sum(?::int)", search_results.is_ad),
-      top_ad_count: fragment("sum(?::int)", search_results.is_top_ad)
-    })
   end
 end

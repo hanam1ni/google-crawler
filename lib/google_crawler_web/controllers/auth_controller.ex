@@ -28,7 +28,7 @@ defmodule GoogleCrawlerWeb.AuthController do
         |> put_session(:user_id, user.id)
         |> redirect(to: Routes.keyword_path(conn, :index))
 
-      {:error, reason} ->
+      {:error, _} ->
         conn
         |> put_flash(:error, "Something went wrong, please try again")
         |> redirect(to: Routes.keyword_path(conn, :index))
