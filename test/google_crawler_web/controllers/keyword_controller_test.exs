@@ -2,15 +2,15 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   use GoogleCrawlerWeb.ConnCase
   use Mimic
 
-  Mimic.copy(GoogleCrawler.Scraper.Supervisor)
+  Mimic.copy(GoogleCrawler.Keywords.ScraperSupervisor)
 
-  alias GoogleCrawler.Keyword
+  alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Repo
 
   describe "index/2" do
     test "renders the keyword list", %{conn: conn} do
       user = insert(:user)
-      keywords = insert_list(2, :keyword)
+      keywords = insert_list(2, :keyword, user: user)
 
       conn =
         conn
@@ -27,7 +27,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   describe "show/2" do
     test "renders the given keyword", %{conn: conn} do
       user = insert(:user)
-      keyword = insert(:completed_scraped_keyword)
+      keyword = insert(:completed_scraped_keyword, user: user)
 
       conn =
         conn
@@ -44,7 +44,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> stub(:start_child, fn keyword -> keyword end)
 
       conn
@@ -61,7 +61,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       user = insert(:user)
       keyword_title = Faker.Lorem.word()
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> expect(:start_child, fn [%Keyword{title: ^keyword_title}] = keyword -> keyword end)
 
       conn
@@ -79,7 +79,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
         filename: "keywords.csv"
       }
 
-      GoogleCrawler.Scraper.Supervisor
+      GoogleCrawler.Keywords.ScraperSupervisor
       |> stub(:start_child, fn keyword -> keyword end)
 
       conn
@@ -95,7 +95,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
   describe "delete/2" do
     test "deletes the given keyword", %{conn: conn} do
       user = insert(:user)
-      keyword = insert(:completed_scraped_keyword)
+      keyword = insert(:completed_scraped_keyword, user: user)
 
       conn
       |> login_as(user)
