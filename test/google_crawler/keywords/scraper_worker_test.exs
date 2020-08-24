@@ -2,13 +2,9 @@ defmodule GoogleCrawler.Keywords.ScraperWorkerTest do
   use GoogleCrawler.DataCase
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
-  use Mimic
-  Mimic.copy(GoogleCrawler.SearchResults.ParserSupervisor)
-  setup :set_mimic_global
-
   alias GoogleCrawler.Keywords.Keyword
-  alias GoogleCrawler.Repo
   alias GoogleCrawler.Keywords.ScraperWorker
+  alias GoogleCrawler.Repo
 
   describe "start_link/1" do
     test "updates the given keywords result_page_html" do

@@ -20,11 +20,15 @@ defmodule GoogleCrawler.DataCase do
     quote do
       alias GoogleCrawler.Repo
 
+      use Mimic
+
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import GoogleCrawler.DataCase
       import GoogleCrawler.Factory
+
+      setup :set_mimic_global
     end
   end
 

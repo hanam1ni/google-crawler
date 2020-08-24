@@ -5,7 +5,7 @@ defmodule GoogleCrawler.Keywords.KeywordFactory do
     quote do
       def keyword_factory do
         %Keyword{
-          title: Faker.Lorem.word(),
+          title: Faker.Lorem.sentence(3),
           result_page_html: nil,
           status: Keyword.statuses().initial,
           user: build(:user)

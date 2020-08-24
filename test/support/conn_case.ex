@@ -19,13 +19,15 @@ defmodule GoogleCrawlerWeb.ConnCase do
 
   using do
     quote do
+      alias GoogleCrawlerWeb.Router.Helpers, as: Routes
+
+      use Mimic
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import GoogleCrawlerWeb.ConnCase
       import GoogleCrawler.Factory
-
-      alias GoogleCrawlerWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
       @endpoint GoogleCrawlerWeb.Endpoint

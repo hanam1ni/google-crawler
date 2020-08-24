@@ -12,18 +12,19 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
   @result_url_property "href"
 
   # Client Interface
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(keyword) do
     GenServer.start_link(__MODULE__, {keyword})
   end
 
   # Server
   def init(state) do
-    GenServer.cast(self(), {:generate})
+    GenServer.cast(self(), {:parsing})
 
     {:ok, state}
   end
 
-  def handle_cast({:generate}, {keyword}) do
+  def handle_cast({:parsing}, {keyword}) do
     keyword
     |> Keywords.update_keyword_status(Keyword.statuses().parsing)
     |> parse_result_page
@@ -40,7 +41,7 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
   end
 
   defp save_result(result_params, keyword) do
-    Enum.map(result_params, fn params ->
+    Enum.each(result_params, fn params ->
       SearchResults.create_search_result(keyword, params)
     end)
   end

@@ -3,7 +3,6 @@ defmodule GoogleCrawlerWeb.KeywordController do
 
   alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.Keyword
-  alias GoogleCrawler.Scraper.Supervisor, as: ScraperSupervisor
 
   def index(conn, _params) do
     keywords = Keywords.list_keywords(conn.assigns.user.id)

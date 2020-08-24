@@ -30,19 +30,20 @@ defmodule GoogleCrawler.Keywords.Keyword do
   end
 
   @doc false
-  def create_changeset(keyword, attrs) do
+  def create_changeset(keyword \\ %__MODULE__{}, attrs) do
     keyword
     |> cast(attrs, [:title])
     |> validate_required([:title])
+    |> assoc_constraint(:user)
     |> unique_constraint([:title, :user_id])
   end
 
-  def update_result_page_html_changeset(keyword, result_page_html) do
+  def update_result_page_html_changeset(keyword \\ %__MODULE__{}, result_page_html) do
     keyword
     |> change(result_page_html: result_page_html)
   end
 
-  def update_status_changeset(keyword, status) do
+  def update_status_changeset(keyword \\ %__MODULE__{}, status) do
     keyword
     |> change(status: status)
     |> validate_inclusion(:status, Map.values(@statuses))
