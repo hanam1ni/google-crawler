@@ -32,8 +32,8 @@ defmodule GoogleCrawler.Keywords.Keyword do
   @doc false
   def create_changeset(keyword \\ %__MODULE__{}, attrs) do
     keyword
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:title, :user_id])
+    |> validate_required([:title, :user_id])
     |> assoc_constraint(:user)
     |> unique_constraint([:title, :user_id])
   end

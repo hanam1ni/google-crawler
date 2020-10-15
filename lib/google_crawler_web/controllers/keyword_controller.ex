@@ -23,7 +23,9 @@ defmodule GoogleCrawlerWeb.KeywordController do
   end
 
   def create(conn, %{"keyword" => keyword_params}) do
-    Keywords.create_keyword(conn.assigns.user, keyword_params)
+    keyword_params
+    |> Map.put("user_id", conn.assigns.user.id)
+    |> Keywords.create_keyword()
     |> case do
       {:ok, keyword} ->
         Keywords.scrape_keyword()
@@ -43,7 +45,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
     |> File.stream!()
     |> CSV.decode!()
     |> Enum.each(fn [keyword_title] ->
-      Keywords.create_keyword(conn.assigns.user, %{title: keyword_title})
+      Keywords.create_keyword(%{title: keyword_title, user_id: conn.assigns.user.id})
       |> case do
         {:ok, keyword} -> keyword
       end
