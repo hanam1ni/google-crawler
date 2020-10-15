@@ -47,7 +47,7 @@ defmodule GoogleCrawler.KeywordsTest do
       keyword2 = insert(:keyword, user: user1)
       insert(:keyword, user: user2)
 
-      [list_keyword1, list_keyword2] = Keywords.list_keywords(user1.id)
+      [list_keyword1, list_keyword2] = Keywords.list_keywords(user1.id, %{})
 
       assert list_keyword1.id == keyword1.id
       assert list_keyword1.user_id == user1.id
@@ -62,7 +62,7 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:ad_search_result, keyword: keyword)
       insert(:top_ad_search_result, keyword: keyword)
 
-      [list_keyword] = Keywords.list_keywords(user.id)
+      [list_keyword] = Keywords.list_keywords(user.id, %{})
 
       assert list_keyword.result_count == 3
       assert list_keyword.ad_count == 2

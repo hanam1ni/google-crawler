@@ -17,15 +17,16 @@ defmodule GoogleCrawler.Keywords do
     |> Repo.delete()
   end
 
-  def list_keywords(user_id) do
-    keywords_with_result_report()
+  def list_keywords(user_id, filter_params) do
+    keyword_with_result_report()
+    |> filter_by_url(filter_params)
     |> where(user_id: ^user_id)
     |> order_by([:id])
     |> Repo.all()
   end
 
   def get_keyword_by_id(id) do
-    keywords_with_result_report()
+    keyword_with_result_report()
     |> preload([:search_results])
     |> Repo.get(id)
   end
@@ -58,14 +59,21 @@ defmodule GoogleCrawler.Keywords do
     |> Repo.all()
   end
 
-  defp keywords_with_result_report do
+  defp keyword_with_result_report do
     Keyword
-    |> join(:left, [keyword], search_results in assoc(keyword, :search_results))
+    |> join(:left, [keyword], search_results in assoc(keyword, :search_results), as: :search_results)
     |> group_by([keyword], keyword.id)
-    |> select_merge([_, search_results], %{
-      result_count: count(search_results.id),
-      ad_count: fragment("sum(?::int)", search_results.is_ad),
-      top_ad_count: fragment("sum(?::int)", search_results.is_top_ad)
+    |> select_merge([search_results: sr], %{
+      result_count: count(sr.id),
+      ad_count: fragment("sum(?::int)", sr.is_ad),
+      top_ad_count: fragment("sum(?::int)", sr.is_top_ad)
     })
   end
+
+  defp filter_by_url(keywords, %{"url" => url}) do
+    keywords
+    |> where([search_results: sr], fragment("? LIKE ?", sr.url, ^"%#{url}%"))
+  end
+
+  defp filter_by_url(keywords, _), do: keywords
 end
