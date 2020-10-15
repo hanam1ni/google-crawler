@@ -1,12 +1,11 @@
 defmodule GoogleCrawler.SearchResults do
   alias GoogleCrawler.Repo
-  alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.SearchResults.SearchResult
 
-  @spec create_search_result(%Keyword{}, map()) ::
+  @spec create_search_result(map()) ::
           {:ok, %SearchResult{} | {:error, Ecto.Changeset.t()}}
-  def create_search_result(%Keyword{} = keyword, attr) do
-    SearchResult.create_changeset(keyword, attr)
+  def create_search_result(attrs) do
+    SearchResult.create_changeset(attrs)
     |> Repo.insert()
   end
 end

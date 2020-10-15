@@ -5,9 +5,9 @@ defmodule GoogleCrawler.Keywords.KeywordTest do
 
   describe "create_changeset/2" do
     test "returns valid changeset when given valid attributes" do
-      keyword = build(:keyword, user: build(:user))
+      user = insert(:user)
 
-      changeset = Keyword.create_changeset(keyword, %{title: "Keyword title"})
+      changeset = Keyword.create_changeset(%{title: "Keyword title", user_id: user.id})
 
       assert changeset.valid?
       assert changeset.changes.title == "Keyword title"
@@ -18,7 +18,7 @@ defmodule GoogleCrawler.Keywords.KeywordTest do
 
       refute changeset.valid?
 
-      assert errors_on(changeset) == %{title: ["can't be blank"]}
+      assert errors_on(changeset) == %{title: ["can't be blank"], user_id: ["can't be blank"]}
     end
   end
 

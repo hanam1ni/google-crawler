@@ -103,7 +103,12 @@ defmodule GoogleCrawler.KeywordsTest do
       %{id: keyword2_id} = insert(:keyword, status: Keyword.statuses().initial)
       insert(:keyword, status: Keyword.statuses().scrape_completed)
 
-      expect(ScraperSupervisor, :start_child, fn [%Keyword{id: ^keyword1_id}, %Keyword{id: ^keyword2_id}] -> :ok end)
+      expect(ScraperSupervisor, :start_child, fn [
+                                                   %Keyword{id: ^keyword1_id},
+                                                   %Keyword{id: ^keyword2_id}
+                                                 ] ->
+        :ok
+      end)
 
       Keywords.scrape_keyword()
 
