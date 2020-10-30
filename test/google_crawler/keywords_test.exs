@@ -47,12 +47,12 @@ defmodule GoogleCrawler.KeywordsTest do
       keyword2 = insert(:keyword, user: user1)
       insert(:keyword, user: user2)
 
-      [list_keyword1, list_keyword2] = Keywords.list_keywords(user1.id, %{})
+      [keyword1_in_db, keyword2_in_db] = Keywords.list_keywords(user1.id, %{})
 
-      assert list_keyword1.id == keyword1.id
-      assert list_keyword1.user_id == user1.id
-      assert list_keyword2.id == keyword2.id
-      assert list_keyword2.user_id == user1.id
+      assert keyword1_in_db.id == keyword1.id
+      assert keyword1_in_db.user_id == user1.id
+      assert keyword2_in_db.id == keyword2.id
+      assert keyword2_in_db.user_id == user1.id
     end
 
     test "lists keyword with result report" do
@@ -62,11 +62,23 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:ad_search_result, keyword: keyword)
       insert(:top_ad_search_result, keyword: keyword)
 
-      [list_keyword] = Keywords.list_keywords(user.id, %{})
+      [keyword_in_db] = Keywords.list_keywords(user.id, %{})
 
-      assert list_keyword.result_count == 3
-      assert list_keyword.ad_count == 2
-      assert list_keyword.top_ad_count == 1
+      assert keyword_in_db.result_count == 3
+      assert keyword_in_db.ad_count == 2
+      assert keyword_in_db.top_ad_count == 1
+    end
+
+    test "filters keywords which contain matched URL search result if given URL in params" do
+      user = insert(:user)
+      keyword1 = insert(:keyword, user: user)
+      keyword2 = insert(:keyword, user: user)
+      insert(:search_result, url: "example1.com", keyword: keyword1)
+      insert(:search_result, url: "example2.net", keyword: keyword2)
+
+      [keyword1_in_db] = Keywords.list_keywords(user.id, %{"url" => ".com"})
+
+      assert keyword1_in_db.id == keyword1.id
     end
   end
 

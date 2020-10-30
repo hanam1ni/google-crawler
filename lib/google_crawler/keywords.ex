@@ -61,7 +61,9 @@ defmodule GoogleCrawler.Keywords do
 
   defp keyword_with_result_report do
     Keyword
-    |> join(:left, [keyword], search_results in assoc(keyword, :search_results), as: :search_results)
+    |> join(:left, [keyword], search_results in assoc(keyword, :search_results),
+      as: :search_results
+    )
     |> group_by([keyword], keyword.id)
     |> select_merge([search_results: sr], %{
       result_count: count(sr.id),

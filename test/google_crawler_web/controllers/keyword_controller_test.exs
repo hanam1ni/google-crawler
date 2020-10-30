@@ -1,6 +1,7 @@
 defmodule GoogleCrawlerWeb.KeywordControllerTest do
   use GoogleCrawlerWeb.ConnCase, async: true
 
+  alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Repo
 
@@ -21,6 +22,18 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       assert html_response(conn, 200) =~ "#{keyword1.title}"
       assert html_response(conn, 200) =~ "#{keyword2.title}"
       refute html_response(conn, 200) =~ "#{other_user_keyword.title}"
+    end
+
+    test "filters the keywords with the given params", %{conn: conn} do
+      %{id: user_id} = user = insert(:user)
+
+      expect(Keywords, :list_keywords, fn ^user_id, %{"url" => ".com"} -> [] end)
+
+      conn
+      |> login_as(user)
+      |> get(Routes.keyword_path(conn, :index), %{"url" => ".com"})
+
+      verify!()
     end
   end
 
