@@ -6,7 +6,7 @@ defmodule GoogleCrawlerWeb.AuthController do
   alias GoogleCrawler.User
   alias GoogleCrawler.Repo
 
-  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
+  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _) do
     user_params = %{token: auth.credentials.token, email: auth.info.email, provider: "google"}
     changeset = User.changeset(%User{}, user_params)
 

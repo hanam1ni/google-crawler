@@ -14,10 +14,10 @@ defmodule GoogleCrawler.SearchResults.SearchResult do
   end
 
   @doc false
-  def create_changeset(search_result \\ %__MODULE__{}, keyword, attrs) do
+  def create_changeset(search_result \\ %__MODULE__{}, attrs) do
     search_result
-    |> cast(attrs, [:url, :title, :is_ad, :is_top_ad])
-    |> validate_required([:url, :title])
-    |> Ecto.Changeset.put_assoc(:keyword, keyword)
+    |> cast(attrs, [:url, :keyword_id, :title, :is_ad, :is_top_ad])
+    |> validate_required([:url, :keyword_id, :title])
+    |> assoc_constraint(:keyword)
   end
 end

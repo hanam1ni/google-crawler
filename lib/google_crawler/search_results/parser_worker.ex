@@ -42,7 +42,9 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
 
   defp save_result(result_params, keyword) do
     Enum.each(result_params, fn params ->
-      SearchResults.create_search_result(keyword, params)
+      params
+      |> Map.put(:keyword_id, keyword.id)
+      |> SearchResults.create_search_result()
     end)
   end
 

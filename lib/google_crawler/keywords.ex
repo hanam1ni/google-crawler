@@ -4,20 +4,17 @@ defmodule GoogleCrawler.Keywords do
   alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Keywords.ScraperSupervisor
   alias GoogleCrawler.Repo
-  alias GoogleCrawler.User
 
   @scraped_keywords_per_chunk 10
 
-  def create_keyword(%User{} = user, attrs) do
-    user
-    |> Ecto.build_assoc(:keywords)
-    |> Keyword.create_changeset(attrs)
+  def create_keyword(attrs) do
+    Keyword.create_changeset(attrs)
     |> Repo.insert()
   end
 
   def delete_keyword(id) do
-    Repo.get(Keyword, id)
-    |> Repo.delete
+    Repo.get!(Keyword, id)
+    |> Repo.delete()
   end
 
   def list_keywords(user_id) do
@@ -57,7 +54,7 @@ defmodule GoogleCrawler.Keywords do
 
   defp keywords_with_initial_status do
     Keyword
-    |> where(status: ^Keyword.statuses.initial)
+    |> where(status: ^Keyword.statuses().initial)
     |> Repo.all()
   end
 

@@ -13,7 +13,7 @@ defmodule GoogleCrawler.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def changeset(user \\ %__MODULE__{}, attrs) do
     user
     |> cast(attrs, [:email, :provider, :token])
     |> validate_required([:email, :provider, :token])
