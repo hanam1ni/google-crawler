@@ -1,7 +1,6 @@
 defmodule GoogleCrawler.SearchResults.SearchResultTest do
   use GoogleCrawler.DataCase
 
-  alias GoogleCrawler.SearchResults
   alias GoogleCrawler.SearchResults.SearchResult
 
   describe "create_changeset/2" do

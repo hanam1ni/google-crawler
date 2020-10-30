@@ -2,7 +2,6 @@ defmodule GoogleCrawlerWeb.KeywordController do
   use GoogleCrawlerWeb, :controller
 
   alias GoogleCrawler.Keywords
-  alias GoogleCrawler.Keywords.Keyword
 
   def index(conn, _params) do
     keywords = Keywords.list_keywords(conn.assigns.user.id)
@@ -10,11 +9,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
     render(conn, "index.html", keywords: keywords)
   end
 
-  def new(conn, _params) do
-    keyword = Keyword.create_changeset(%Keyword{}, %{})
-
-    render(conn, "new.html", keyword: keyword)
-  end
+  def new(conn, _params), do: render(conn, "new.html")
 
   def show(conn, %{"id" => keyword_id}) do
     keyword = Keywords.get_keyword_by_id(keyword_id)
@@ -22,8 +17,8 @@ defmodule GoogleCrawlerWeb.KeywordController do
     render(conn, "show.html", keyword: keyword)
   end
 
-  def create(conn, %{"keyword" => keyword_params}) do
-    keyword_params
+  def create(conn, params) do
+    params
     |> Map.put("user_id", conn.assigns.user.id)
     |> Keywords.create_keyword()
     |> case do
