@@ -51,7 +51,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       |> login_as(user)
       |> post(Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
 
-      created_keyword = Keyword |> Repo.all() |> Enum.fetch!(0)
+      [created_keyword] = Keyword |> Repo.all()
 
       assert created_keyword.title == keyword_title
       assert created_keyword.status == Keyword.statuses().initial

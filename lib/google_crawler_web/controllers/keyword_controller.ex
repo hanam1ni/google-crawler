@@ -17,8 +17,8 @@ defmodule GoogleCrawlerWeb.KeywordController do
     render(conn, "show.html", keyword: keyword)
   end
 
-  def create(conn, params) do
-    params
+  def create(conn, %{"keyword" => keyword_params}) do
+    keyword_params
     |> Map.put("user_id", conn.assigns.user.id)
     |> Keywords.create_keyword()
     |> case do
