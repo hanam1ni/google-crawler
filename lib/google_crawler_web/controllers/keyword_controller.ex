@@ -6,7 +6,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
   def index(conn, params) do
     keywords = Keywords.list_keywords(conn.assigns.user.id, params)
 
-    render(conn, "index.html", keywords: keywords)
+    render(conn, "index.html", keywords: keywords, params: params)
   end
 
   def new(conn, _params), do: render(conn, "new.html")
