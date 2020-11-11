@@ -56,7 +56,8 @@ defmodule GoogleCrawler.MixProject do
       {:ex_machina, "~> 2.4", only: :test},
       {:faker, "~> 0.14", only: :test},
       {:mimic, "~> 1.3", only: :test},
-      {:exvcr, "~> 0.11", only: :test}
+      {:exvcr, "~> 0.11", only: :test},
+      {:wallaby, "~> 0.26.0", runtime: false, only: :test}
     ]
   end
 

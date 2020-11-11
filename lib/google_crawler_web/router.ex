@@ -13,6 +13,10 @@ defmodule GoogleCrawlerWeb.Router do
     plug GoogleCrawlerWeb.Plugs.Authentication
   end
 
+  pipeline :mock_oauth do
+    plug GoogleCrawlerWeb.Plugs.Tests.MockOauth
+  end
+
   scope "/", GoogleCrawlerWeb do
     pipe_through :browser
 
@@ -29,6 +33,10 @@ defmodule GoogleCrawlerWeb.Router do
 
   scope "/auth", GoogleCrawlerWeb do
     pipe_through :browser
+
+    if Mix.env() == :test do
+      pipe_through :mock_oauth
+    end
 
     delete "/", AuthController, :delete
     get "/:provider", AuthController, :request
