@@ -11,11 +11,13 @@ defmodule GoogleCrawlerWeb.Plugs.Tests.MockOauth do
   end
 
   defp build_auth_payload(email) do
-    %{credentials: %{
-      token: "MOCK_TOKEN",
-    },
-    info: %{
-      email: email
-    }}
+    %{
+      credentials: %{
+        token: "MOCK_TOKEN"
+      },
+      info: %{
+        email: email
+      }
+    }
   end
 end
