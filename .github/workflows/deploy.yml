@@ -3,15 +3,17 @@ on:
   push:
     branches:
       - master
+      - chore/setup-staging-deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       
       - uses: akhileshns/heroku-deploy@v3.2.6
+        if: ${{ github.ref == 'refs/heads/chore/setup-staging-deployment' }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "google-result-crawler"
+          heroku_app_name: "google-result-crawler-staging"
           heroku_email: "immicky.a@gmail.com"
