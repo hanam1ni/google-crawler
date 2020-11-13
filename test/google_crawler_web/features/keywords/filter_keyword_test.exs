@@ -5,7 +5,7 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     keyword_table_cell: ".table-keyword td",
     button_keyword_filter: "a[href='#keywordFilter']",
     button_submit_filter: "#keywordFilter button[type='submit']",
-    input_url_filter: "input[name='url']"
+    input_url_filter: "input[name='keyword_filter[url]']"
   }
 
   feature "filters keywords contain result url by the given url", %{session: session} do
