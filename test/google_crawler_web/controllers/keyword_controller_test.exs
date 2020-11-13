@@ -31,7 +31,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
       conn
       |> login_as(user)
-      |> get(Routes.keyword_path(conn, :index), %{"url" => ".com"})
+      |> get(Routes.keyword_path(conn, :index), %{"keyword_filter" => %{"url" => ".com"}})
 
       verify!()
     end
