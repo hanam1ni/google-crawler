@@ -20,12 +20,12 @@ defmodule GoogleCrawler.MixProject do
   def application do
     [
       mod: {GoogleCrawler.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ueberauth_google]
     ]
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -38,13 +38,26 @@ defmodule GoogleCrawler.MixProject do
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:httpoison, "~> 1.6"},
+      {:floki, "~> 0.27.0"},
+      {:poison, "~> 3.1"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_google, "~> 0.9"},
+      {:csv, "~> 2.3"},
+      # Development
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      # Test
+      {:ex_machina, "~> 2.4", only: :test},
+      {:faker, "~> 0.14", only: :test},
+      {:mimic, "~> 1.3", only: :test},
+      {:exvcr, "~> 0.11", only: :test},
+      {:wallaby, "~> 0.26.0", runtime: false, only: :test}
     ]
   end
 

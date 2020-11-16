@@ -9,14 +9,38 @@ defmodule GoogleCrawlerWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :authentication do
+    plug GoogleCrawlerWeb.Plugs.Authentication
+  end
+
+  pipeline :mock_oauth do
+    plug GoogleCrawlerWeb.Plugs.Tests.MockOauth
   end
 
   scope "/", GoogleCrawlerWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/", GoogleCrawlerWeb do
+    pipe_through :browser
+    pipe_through :authentication
+
+    resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
+    post "/keyword/import", KeywordController, :import, as: :keyword_import
+  end
+
+  scope "/auth", GoogleCrawlerWeb do
+    pipe_through :browser
+
+    if Mix.env() == :test do
+      pipe_through :mock_oauth
+    end
+
+    delete "/", AuthController, :delete
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.

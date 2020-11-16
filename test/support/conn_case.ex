@@ -19,12 +19,15 @@ defmodule GoogleCrawlerWeb.ConnCase do
 
   using do
     quote do
+      alias GoogleCrawlerWeb.Router.Helpers, as: Routes
+
+      use Mimic
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import GoogleCrawlerWeb.ConnCase
-
-      alias GoogleCrawlerWeb.Router.Helpers, as: Routes
+      import GoogleCrawler.Factory
 
       # The default endpoint for testing
       @endpoint GoogleCrawlerWeb.Endpoint
@@ -39,5 +42,9 @@ defmodule GoogleCrawlerWeb.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  def login_as(conn, user) do
+    conn |> Plug.Test.init_test_session(%{user_id: user.id})
   end
 end
