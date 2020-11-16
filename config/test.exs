@@ -16,10 +16,18 @@ config :google_crawler, GoogleCrawler.Repo,
 # you can enable the server option below.
 config :google_crawler, GoogleCrawlerWeb.Endpoint,
   http: [port: 4002],
-  server: false
+  server: true
+
+config :google_crawler, :sql_sandbox, true
 
 # Print only warnings and errors during test
 config :logger, level: :warn
 
 config :exvcr,
   vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes"
+
+config :wallaby,
+  otp_app: :google_crawler,
+  driver: Wallaby.Chrome,
+  screenshot_dir: "tmp/wallaby",
+  screenshot_on_failure: true

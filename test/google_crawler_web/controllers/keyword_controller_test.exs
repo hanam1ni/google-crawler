@@ -62,7 +62,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
       conn
       |> login_as(user)
-      |> post(Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
+      |> post(Routes.keyword_path(conn, :create), %{title: keyword_title})
 
       [created_keyword] = Keyword |> Repo.all()
 
@@ -79,7 +79,7 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
 
       conn
       |> login_as(user)
-      |> post(Routes.keyword_path(conn, :create), %{keyword: %{title: keyword_title}})
+      |> post(Routes.keyword_path(conn, :create), %{title: keyword_title})
     end
   end
 
