@@ -1,7 +1,7 @@
-defmodule GoogleCrawler.UserTest do
+defmodule GoogleCrawler.Identities.UserTest do
   use GoogleCrawler.DataCase
 
-  alias GoogleCrawler.User
+  alias GoogleCrawler.Identities.User
 
   describe "changeset/2" do
     test "returns valid changeset when given valid attributes" do

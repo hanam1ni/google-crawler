@@ -1,4 +1,4 @@
-defmodule GoogleCrawler.User do
+defmodule GoogleCrawler.Identities.User do
   use Ecto.Schema
   import Ecto.Changeset
 

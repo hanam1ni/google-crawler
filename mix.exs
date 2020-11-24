@@ -50,6 +50,7 @@ defmodule GoogleCrawler.MixProject do
       {:ueberauth, "~> 0.6"},
       {:ueberauth_google, "~> 0.9"},
       {:csv, "~> 2.3"},
+      {:guardian, "~> 1.0"},
       # Development
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       # Test

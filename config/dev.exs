@@ -74,3 +74,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :google_crawler, GoogleCrawler.Tokenizer,
+  issuer: "google_crawler",
+  secret_key: "2fd9ihcXeatZoKogsXvXmahdEN2Q4HQAEcPrU/hCMwhtxsmdCUSCZ9AjWSBG5Gwg"

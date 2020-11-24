@@ -3,7 +3,7 @@ defmodule GoogleCrawlerWeb.AuthController do
 
   plug Ueberauth
 
-  alias GoogleCrawler.User
+  alias GoogleCrawler.Identities.User
   alias GoogleCrawler.Repo
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _) do

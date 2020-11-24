@@ -3,8 +3,8 @@ defmodule GoogleCrawlerWeb.Api.AuthController do
 
   plug Ueberauth
 
-  alias GoogleCrawler.User
-  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Identities.User
+  alias GoogleCrawler.{Repo, Tokenizer}
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _) do
     user_params = %{token: auth.credentials.token, email: auth.info.email, provider: "google"}
@@ -15,10 +15,12 @@ defmodule GoogleCrawlerWeb.Api.AuthController do
 
   defp signin(conn, changeset) do
     case insert_or_update_user(changeset) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        {:ok, access_token, _} = Tokenizer.generate_access_token(user)
+
         conn
         |> put_status(:ok)
-        |> render("token.json", %{})
+        |> render("token.json", %{access_token: access_token})
 
       {:error, _} ->
         conn
