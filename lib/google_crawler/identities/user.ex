@@ -17,5 +17,6 @@ defmodule GoogleCrawler.Identities.User do
     user
     |> cast(attrs, [:email, :provider, :token])
     |> validate_required([:email, :provider, :token])
+    |> unique_constraint(:email)
   end
 end

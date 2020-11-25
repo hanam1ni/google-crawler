@@ -11,7 +11,6 @@ defmodule GoogleCrawlerWeb.ErrorHandler do
     |> halt()
   end
 
-  @impl Guardian.Plug.ErrorHandler
   def auth_error(conn, {_type, _reason}, _opts) do
     conn
     |> handle(:forbidden)

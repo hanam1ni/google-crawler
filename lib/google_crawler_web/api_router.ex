@@ -6,8 +6,10 @@ defmodule GoogleCrawlerWeb.ApiRouter do
   end
 
   pipeline :authentication do
-    plug Guardian.Plug.Pipeline, module: GoogleCrawler.Tokenizer,
-                                 error_handler: GoogleCrawlerWeb.ErrorHandler
+    plug Guardian.Plug.Pipeline,
+      module: GoogleCrawler.Tokenizer,
+      error_handler: GoogleCrawlerWeb.ErrorHandler
+
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.EnsureAuthenticated
     plug Guardian.Plug.LoadResource

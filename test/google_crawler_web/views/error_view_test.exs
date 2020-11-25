@@ -1,14 +1,18 @@
 defmodule GoogleCrawlerWeb.ErrorViewTest do
-  use GoogleCrawlerWeb.ConnCase, async: true
+  use GoogleCrawlerWeb.ViewCase
 
-  # Bring render/3 and render_to_string/3 for testing custom views
-  import Phoenix.View
+  alias GoogleCrawlerWeb.ErrorView
 
   test "renders 404.html" do
-    assert render_to_string(GoogleCrawlerWeb.ErrorView, "404.html", []) == "Not Found"
+    assert render_to_string(ErrorView, "404.html", []) == "Not Found"
   end
 
   test "renders 500.html" do
-    assert render_to_string(GoogleCrawlerWeb.ErrorView, "500.html", []) == "Internal Server Error"
+    assert render_to_string(ErrorView, "500.html", []) == "Internal Server Error"
+  end
+
+  test "renders error.json" do
+    assert %{object: "error", code: :unauthorized} ==
+             ErrorView.render("error.json", %{status: :unauthorized})
   end
 end
