@@ -60,28 +60,5 @@ defmodule GoogleCrawlerWeb.Api.AuthControllerTest do
 
       assert user.id == claims["sub"]
     end
-
-    test "returns bad request when given invalid token", %{conn: conn} do
-      _user = insert(:user, email: "user@mail.com", token: "AUTH_TOKEN")
-
-      auth_response = %{
-        credentials: %{
-          token: "INVALID_TOKEN"
-        },
-        info: %{
-          email: "user@mail.com"
-        }
-      }
-
-      conn =
-        conn
-        |> Plug.Conn.assign(:ueberauth_auth, auth_response)
-        |> AuthController.call(:callback)
-
-      assert %{
-               "object" => "error",
-               "code" => "bad_request"
-             } == json_response(conn, 400)
-    end
   end
 end
