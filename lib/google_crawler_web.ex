@@ -33,6 +33,8 @@ defmodule GoogleCrawlerWeb do
         root: "lib/google_crawler_web/templates",
         namespace: GoogleCrawlerWeb
 
+      use JSONAPI.View
+
       # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [

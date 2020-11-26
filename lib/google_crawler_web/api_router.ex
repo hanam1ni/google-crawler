@@ -19,7 +19,7 @@ defmodule GoogleCrawlerWeb.ApiRouter do
   scope "/api", GoogleCrawlerWeb.Api do
     pipe_through [:api, :authentication]
 
-    # For authenticated route
+    resources "/keyword", KeywordController, only: [:index]
   end
 
   scope "/api", GoogleCrawlerWeb.Api do
