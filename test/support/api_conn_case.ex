@@ -1,6 +1,8 @@
 defmodule GoogleCrawlerWeb.ApiConnCase do
   use ExUnit.CaseTemplate
 
+  alias GoogleCrawler.Tokenizer
+
   using do
     quote do
       alias GoogleCrawlerWeb.ApiRouter.Helpers, as: Routes
@@ -9,6 +11,7 @@ defmodule GoogleCrawlerWeb.ApiConnCase do
 
       import Plug.Conn
       import Phoenix.ConnTest
+      import GoogleCrawlerWeb.ApiConnCase
       import GoogleCrawler.Factory
 
       # The default endpoint for testing
@@ -24,5 +27,12 @@ defmodule GoogleCrawlerWeb.ApiConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  def login_as(conn, user) do
+    {:ok, access_token, _} = Tokenizer.generate_access_token(user)
+
+    conn
+    |> Plug.Conn.put_req_header("authorization", "bearer: " <> access_token)
   end
 end

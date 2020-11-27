@@ -8,7 +8,7 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
     keywords = Keywords.list_keywords(conn.assigns.user.id, %{})
 
     conn
-    |> put_status(:created)
+    |> put_status(:ok)
     |> render("index.json", %{data: keywords, conn: conn})
   end
 end
