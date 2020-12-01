@@ -1,8 +1,6 @@
 defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
   use GoogleCrawlerWeb.ApiConnCase, async: true
 
-  alias GoogleCrawlerWeb.Api.KeywordController
-
   describe "index/2" do
     test "returns the keywords for the given user", %{conn: conn} do
       user = insert(:user)
