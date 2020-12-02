@@ -1,6 +1,7 @@
 defmodule GoogleCrawlerWeb.ErrorHandler do
   use Phoenix.Controller
 
+  alias Ecto.Changeset
   alias GoogleCrawlerWeb.ErrorView
 
   def handle(conn, status) do
@@ -8,6 +9,14 @@ defmodule GoogleCrawlerWeb.ErrorHandler do
     |> put_status(status)
     |> put_view(ErrorView)
     |> render("error.json", status: status)
+    |> halt()
+  end
+
+  def handle(conn, status, %Changeset{} = changeset) do
+    conn
+    |> put_status(status)
+    |> put_view(ErrorView)
+    |> render("error.json", status: status, changeset: changeset)
     |> halt()
   end
 

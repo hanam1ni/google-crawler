@@ -36,8 +36,8 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
         |> put_status(:ok)
         |> render("show.json", %{data: keyword, conn: conn})
 
-      {:error, _changeset} ->
-        ErrorHandler.handle(conn, :bad_request)
+      {:error, changeset} ->
+        ErrorHandler.handle(conn, :bad_request, changeset)
     end
   end
 end
