@@ -23,4 +23,21 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
         |> render("show.json", %{data: keyword, conn: conn})
     end
   end
+
+  def create(conn, %{"type" => "keyword"} = keyword_params) do
+    keyword_params
+    |> Map.put("user_id", conn.assigns.user.id)
+    |> Keywords.create_keyword()
+    |> case do
+      {:ok, keyword} ->
+        Keywords.scrape_keyword()
+
+        conn
+        |> put_status(:ok)
+        |> render("show.json", %{data: keyword, conn: conn})
+
+      {:error, _changeset} ->
+        ErrorHandler.handle(conn, :bad_request)
+    end
+  end
 end
