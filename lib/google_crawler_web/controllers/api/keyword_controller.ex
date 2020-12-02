@@ -13,7 +13,7 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
   end
 
   def show(conn, %{"id" => keyword_id}) do
-    case Keywords.get_keyword_by_id(keyword_id) do
+    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
       nil ->
         ErrorHandler.handle(conn, :not_found)
 

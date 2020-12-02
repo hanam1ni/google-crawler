@@ -12,7 +12,7 @@ defmodule GoogleCrawlerWeb.KeywordController do
   def new(conn, _params), do: render(conn, "new.html")
 
   def show(conn, %{"id" => keyword_id}) do
-    keyword = Keywords.get_keyword_by_id(keyword_id)
+    keyword = Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id)
 
     render(conn, "show.html", keyword: keyword)
   end
