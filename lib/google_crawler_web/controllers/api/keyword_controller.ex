@@ -33,11 +33,13 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
         Keywords.scrape_keyword()
 
         conn
-        |> put_status(:ok)
+        |> put_status(:created)
         |> render("show.json", %{data: keyword, conn: conn})
 
       {:error, changeset} ->
         ErrorHandler.handle(conn, :bad_request, changeset)
     end
   end
+
+  def create(conn, _), do: ErrorHandler.handle(conn, :bad_request)
 end

@@ -26,7 +26,11 @@ defmodule GoogleCrawlerWeb.ApiConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(GoogleCrawler.Repo, {:shared, self()})
     end
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> Plug.Conn.put_req_header("content-type", "application/vnd.api+json")
+
+    {:ok, conn: conn}
   end
 
   def login_as(conn, user) do

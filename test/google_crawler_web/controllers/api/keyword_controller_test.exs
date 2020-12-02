@@ -1,6 +1,9 @@
 defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
   use GoogleCrawlerWeb.ApiConnCase, async: true
 
+  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Keywords.{Keyword, ScraperSupervisor}
+
   describe "index/2" do
     test "returns the keywords for the given user", %{conn: conn} do
       user = insert(:user)
@@ -106,6 +109,105 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
         |> get(Routes.keyword_path(conn, :show, keyword.id))
 
       assert %{"code" => "not_found", "object" => "error"} = json_response(conn, 404)
+    end
+  end
+
+  describe "create/2" do
+    test "creates keyword and starts scraping worker when given valid params", %{conn: conn} do
+      user = insert(:user)
+
+      params = %{
+        "data" => %{
+          "type" => "keyword",
+          "attributes" => %{
+            "title" => "rocket"
+          }
+        }
+      }
+
+      expect(ScraperSupervisor, :start_child, fn [%Keyword{title: "rocket"}] -> :ok end)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_path(conn, :create), params)
+
+      assert %{
+               "data" => %{
+                 "attributes" => %{
+                   "title" => "rocket"
+                 },
+                 "type" => "keyword"
+               }
+             } = json_response(conn, 201)
+
+      [keyword_in_db] = Repo.all(Keyword)
+      assert keyword_in_db.title == "rocket"
+
+      verify!()
+    end
+
+    test "returns error when given invalid params", %{conn: conn} do
+      user = insert(:user)
+
+      params = %{
+        "data" => %{
+          "type" => "keyword",
+          "attributes" => %{
+            "title" => ""
+          }
+        }
+      }
+
+      reject(ScraperSupervisor, :start_child, 1)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_path(conn, :create), params)
+
+      assert %{
+               "code" => "bad_request",
+               "details" => %{
+                 "title" => [
+                   "can't be blank"
+                 ]
+               },
+               "object" => "error"
+             } = json_response(conn, 400)
+
+      assert [] = Repo.all(Keyword)
+
+      verify!()
+    end
+
+    test "returns error when given invalid type", %{conn: conn} do
+      user = insert(:user)
+
+      params = %{
+        "data" => %{
+          "type" => "INVALID_TYPE",
+          "attributes" => %{
+            "title" => "rocket"
+          }
+        }
+      }
+
+      reject(ScraperSupervisor, :start_child, 1)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_path(conn, :create), params)
+
+      assert %{
+               "code" => "bad_request",
+               "object" => "error"
+             } = json_response(conn, 400)
+
+      assert [] = Repo.all(Keyword)
+
+      verify!()
     end
   end
 end
