@@ -12,9 +12,15 @@ defmodule GoogleCrawlerWeb.KeywordController do
   def new(conn, _params), do: render(conn, "new.html")
 
   def show(conn, %{"id" => keyword_id}) do
-    keyword = Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id)
+    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
+      nil ->
+        conn
+        |> put_flash(:error, "Keyword not found.")
+        |> redirect(to: Routes.keyword_path(conn, :index))
 
-    render(conn, "show.html", keyword: keyword)
+      keyword ->
+        render(conn, "show.html", keyword: keyword)
+    end
   end
 
   def create(conn, keyword_params) do
