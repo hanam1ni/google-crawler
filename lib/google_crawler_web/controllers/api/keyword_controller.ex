@@ -1,7 +1,7 @@
 defmodule GoogleCrawlerWeb.Api.KeywordController do
   use GoogleCrawlerWeb, :controller
 
-  alias GoogleCrawler.{Keywords, Repo}
+  alias GoogleCrawler.Keywords
   alias GoogleCrawlerWeb
 
   def index(conn, _params) do
@@ -49,7 +49,8 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
         ErrorHandler.handle(conn, :not_found)
 
       keyword ->
-        Repo.delete(keyword)
+        Keywords.delete_keyword(keyword)
+
         send_resp(conn, :no_content, "")
     end
   end

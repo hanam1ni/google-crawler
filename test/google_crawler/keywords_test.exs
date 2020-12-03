@@ -29,13 +29,17 @@ defmodule GoogleCrawler.KeywordsTest do
     test "deletes the given keyword" do
       keyword = insert(:keyword)
 
-      {:ok, _} = Keywords.delete_keyword(keyword.id)
+      {:ok, _} = Keywords.delete_keyword(keyword)
 
       assert [] = Repo.all(Keyword)
     end
 
     test "raises errors if the given keyword does not exist" do
-      assert_raise Ecto.NoResultsError, fn -> Keywords.delete_keyword(999) end
+      keyword = insert(:keyword)
+
+      Repo.delete(keyword)
+
+      assert_raise Ecto.StaleEntryError, fn -> Keywords.delete_keyword(keyword) end
     end
   end
 
