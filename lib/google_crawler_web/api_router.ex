@@ -24,7 +24,7 @@ defmodule GoogleCrawlerWeb.ApiRouter do
   scope "/api", GoogleCrawlerWeb.Api do
     pipe_through [:api, :authentication, :json_api_deserialize]
 
-    resources "/keyword", KeywordController, only: [:index, :show, :create]
+    resources "/keyword", KeywordController, only: [:index, :show, :create, :delete]
   end
 
   scope "/api", GoogleCrawlerWeb.Api do
