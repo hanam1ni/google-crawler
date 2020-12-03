@@ -1,5 +1,5 @@
 defmodule GoogleCrawlerWeb.ErrorViewTest do
-  use GoogleCrawlerWeb.ViewCase
+  use GoogleCrawlerWeb.ViewCase, async: true
 
   alias GoogleCrawlerWeb.ErrorView
 

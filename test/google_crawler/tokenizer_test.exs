@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.TokenizerTest do
-  use GoogleCrawler.DataCase
+  use GoogleCrawler.DataCase, async: true
 
   alias GoogleCrawler.Tokenizer
 

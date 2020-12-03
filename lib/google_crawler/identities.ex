@@ -5,4 +5,8 @@ defmodule GoogleCrawler.Identities do
   def get_user_by(params) do
     Repo.get_by(User, params)
   end
+
+  def create_user(attrs) do
+    Repo.insert(User.changeset(attrs))
+  end
 end
