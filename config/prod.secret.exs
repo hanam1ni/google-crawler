@@ -43,3 +43,6 @@ config :google_crawler, GoogleCrawlerWeb.Endpoint,
 config :google_crawler, GoogleCrawler.Tokenizer,
   issuer: "google_crawler",
   secret_key: System.get_env("GUARDIAN_SECRET")
+
+config :jsonapi,
+  host: System.get_env("HOST_URL")
