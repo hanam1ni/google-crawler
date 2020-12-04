@@ -17,8 +17,11 @@ defmodule GoogleCrawler.Keywords do
   end
 
   def list_keywords(user_id, filter_params) do
+    compacted_params = compact_params(filter_params)
+
     keyword_with_result_report()
-    |> filter_by_url(filter_params)
+    |> filter_by_title(compacted_params)
+    |> filter_by_url(compacted_params)
     |> where(user_id: ^user_id)
     |> order_by([:id])
     |> Repo.all()
@@ -70,6 +73,21 @@ defmodule GoogleCrawler.Keywords do
       top_ad_count: fragment("sum(?::int)", sr.is_top_ad)
     })
   end
+
+  defp compact_params(nil), do: nil
+
+  defp compact_params(params) do
+    params
+    |> Enum.filter(fn {_key, value} -> value !== "" end)
+    |> Enum.into(%{})
+  end
+
+  defp filter_by_title(keywords, %{"title" => title}) do
+    keywords
+    |> where([k], fragment("? LIKE ?", k.title, ^"%#{title}%"))
+  end
+
+  defp filter_by_title(keywords, _), do: keywords
 
   defp filter_by_url(keywords, %{"url" => url}) do
     keywords
