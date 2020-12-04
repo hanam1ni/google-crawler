@@ -73,6 +73,18 @@ defmodule GoogleCrawler.KeywordsTest do
       assert keyword_in_db.top_ad_count == 1
     end
 
+    test "filters keywords by title if given title in params" do
+      user = insert(:user)
+      _keyword1 = insert(:keyword, title: "apple", user: user)
+      keyword2 = insert(:keyword, title: "rocket", user: user)
+      keyword3 = insert(:keyword, title: "rock climbing", user: user)
+
+      [keyword2_in_db, keyword3_in_db] = Keywords.list_keywords(user.id, %{"title" => "rock"})
+
+      assert keyword2_in_db.id == keyword2.id
+      assert keyword3_in_db.id == keyword3.id
+    end
+
     test "filters keywords which contain matched URL search result if given URL in params" do
       user = insert(:user)
       keyword1 = insert(:keyword, user: user)
