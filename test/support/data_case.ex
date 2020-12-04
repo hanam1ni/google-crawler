@@ -27,8 +27,6 @@ defmodule GoogleCrawler.DataCase do
       import Ecto.Query
       import GoogleCrawler.DataCase
       import GoogleCrawler.Factory
-
-      setup :set_mimic_global
     end
   end
 

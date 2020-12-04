@@ -1,5 +1,5 @@
 defmodule GoogleCrawlerWeb.Api.AuthViewTest do
-  use GoogleCrawlerWeb.ViewCase
+  use GoogleCrawlerWeb.ViewCase, async: true
 
   alias GoogleCrawlerWeb.Api.AuthView
 

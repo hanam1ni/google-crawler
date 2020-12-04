@@ -1,5 +1,5 @@
 defmodule GoogleCrawlerWeb.ErrorHandlerTest do
-  use GoogleCrawlerWeb.ConnCase
+  use GoogleCrawlerWeb.ConnCase, async: true
 
   alias GoogleCrawlerWeb.ErrorHandler
 

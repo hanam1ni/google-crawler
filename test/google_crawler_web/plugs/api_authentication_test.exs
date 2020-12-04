@@ -1,5 +1,5 @@
 defmodule GoogleCrawlerWeb.Plugs.ApiAuthenticationTest do
-  use GoogleCrawlerWeb.ConnCase
+  use GoogleCrawlerWeb.ConnCase, async: true
 
   alias GoogleCrawlerWeb.Plugs.ApiAuthentication
 

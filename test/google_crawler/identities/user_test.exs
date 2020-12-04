@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.Identities.UserTest do
-  use GoogleCrawler.DataCase
+  use GoogleCrawler.DataCase, async: true
 
   alias GoogleCrawler.Identities.User
 
