@@ -1,4 +1,14 @@
 body.keyword.index {
+  .keyword-filter {
+    &__item {
+      margin-bottom: rem(12px);
+
+      @include media-breakpoint-up(lg) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   .table-keyword {
     td {
       vertical-align: middle;

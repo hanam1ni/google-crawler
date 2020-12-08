@@ -19,11 +19,14 @@ defmodule GoogleCrawler.Keywords do
   def list_keywords(user_id, filter_params) do
     compacted_params = compact_params(filter_params)
 
-    keyword_with_result_report()
+    subquery(
+      keyword_with_result_report()
+      |> where(user_id: ^user_id)
+      |> order_by([:id])
+    )
     |> filter_by_title(compacted_params)
     |> filter_by_url(compacted_params)
-    |> where(user_id: ^user_id)
-    |> order_by([:id])
+    |> filter_by_result_count(compacted_params)
     |> Repo.all()
   end
 
@@ -95,4 +98,20 @@ defmodule GoogleCrawler.Keywords do
   end
 
   defp filter_by_url(keywords, _), do: keywords
+
+  defp filter_by_result_count(keywords, %{
+         "result_count_operation" => result_count_operation,
+         "result_count_value" => result_count_value
+       }) do
+    {value, _} = Integer.parse(result_count_value)
+
+    case result_count_operation do
+      ">" -> where(keywords, [k], fragment("? > ?", k.result_count, ^value))
+      "<" -> where(keywords, [k], fragment("? < ?", k.result_count, ^value))
+      "=" -> where(keywords, [k], fragment("? = ?", k.result_count, ^value))
+      _ -> keywords
+    end
+  end
+
+  defp filter_by_result_count(keywords, _), do: keywords
 end
