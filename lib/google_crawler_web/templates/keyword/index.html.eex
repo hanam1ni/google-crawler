@@ -14,63 +14,78 @@
 </section>
 <section class="row mt-3">
   <div class="col-12">
-    <div class="collapse" id="keywordFilter">
+    <div class="collapse keyword-filter" id="keywordFilter">
       <div class="card card-body">
         <form>
           <div class="form-group row">
-            <div class="col-4">
+            <div class="keyword-filter__item col-lg-4 col-6">
               <label for="title">Keyword Title</label>
               <input class="form-control" name="keyword_filter[title]" placeholder="apple, rocket" value=<%= @params["keyword_filter"]["title"] %> >
             </div>
-            <div class="col-4">
+            <div class="keyword-filter__item col-lg-4 col-6">
               <label for="url">URL in result</label>
               <input class="form-control" name="keyword_filter[url]" placeholder="e.g. google, .com" value=<%= @params["keyword_filter"]["url"] %> >
             </div>
+            <div class="keyword-filter__item col-lg-2 col-6">
+              <label for="url">Result count</label>
+              <div class="row no-gutters">
+                <div class="col-6">
+                  <select class="form-control" name="keyword_filter[result_count_operation]">
+                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], ">") %> >></option>
+                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "<") %> ><</option>
+                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "=") %> >=</option>
+                  </select>
+                </div>
+                <div class="col-5 offset-1">
+                  <input class="form-control" name="keyword_filter[result_count_value]" placeholder='0' value=<%= @params["keyword_filter"]["result_count_value"] %> >
+                </div>
+              </div>
+            </div>
+            </div>
+              <button type="submit" class="btn btn-success">
+                Submit
+              </button>
+            </form>
           </div>
-          <button type="submit" class="btn btn-success">
-            Submit
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
-<section class="row mt-3">
-  <div class="col">
-    <table class="table table-hover table-keyword">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Keyword</th>
-          <th>Status</th>
-          <th>Created At</th>
-          <th>Result Count</th>
-          <th>Ad Count</th>
-          <th>Top Ad Count</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for keyword <- @keywords do %>
-          <tr>
-            <td><%= keyword.id %></td>
-            <td><%= keyword.title %></td>
-            <td><%= formatted_status(keyword.status) %></td>
-            <td><%= keyword.inserted_at %></td>
-            <td><%= formatted_result_count(keyword.result_count) %></td>
-            <td><%= formatted_result_count(keyword.ad_count) %></td>
-            <td><%= formatted_result_count(keyword.top_ad_count) %></td>
-            <td class="actionable">
-              <%= link to: Routes.keyword_path(@conn, :show, keyword), class: "btn btn-success actionable__item" do %>
-                <i class="fas fa-info"></i>
-              <% end %>
-              <%= link to: Routes.keyword_path(@conn, :delete, keyword), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger actionable__item" do %>
-                <i class="fas fa-trash-alt"></i>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-</section>
+    </section>
+    <section class="row mt-3">
+      <div class="col">
+        <table class="table table-hover table-keyword">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Keyword</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Result Count</th>
+              <th>Ad Count</th>
+              <th>Top Ad Count</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for keyword <- @keywords do %>
+              <tr>
+                <td><%= keyword.id %></td>
+                <td><%= keyword.title %></td>
+                <td><%= formatted_status(keyword.status) %></td>
+                <td><%= keyword.inserted_at %></td>
+                <td><%= formatted_result_count(keyword.result_count) %></td>
+                <td><%= formatted_result_count(keyword.ad_count) %></td>
+                <td><%= formatted_result_count(keyword.top_ad_count) %></td>
+                <td class="actionable">
+                  <%= link to: Routes.keyword_path(@conn, :show, keyword), class: "btn btn-success actionable__item" do %>
+                    <i class="fas fa-info"></i>
+                  <% end %>
+                  <%= link to: Routes.keyword_path(@conn, :delete, keyword), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger actionable__item" do %>
+                    <i class="fas fa-trash-alt"></i>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
