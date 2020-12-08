@@ -31,9 +31,9 @@
               <div class="row no-gutters">
                 <div class="col-6">
                   <select class="form-control" name="keyword_filter[result_count_operation]">
-                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], ">") %> >></option>
-                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "<") %> ><</option>
-                    <option <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "=") %> >=</option>
+                    <option value=">" <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], ">") %> >></option>
+                    <option value="<" <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "<") %> ><</option>
+                    <option value="=" <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "=") %> >=</option>
                   </select>
                 </div>
                 <div class="col-5 offset-1">
