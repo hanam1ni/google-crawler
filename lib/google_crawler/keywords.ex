@@ -22,10 +22,10 @@ defmodule GoogleCrawler.Keywords do
     subquery(
       keyword_with_result_report()
       |> where(user_id: ^user_id)
+      |> filter_by_url(compacted_params)
       |> order_by([:id])
     )
     |> filter_by_title(compacted_params)
-    |> filter_by_url(compacted_params)
     |> filter_by_result_count(compacted_params)
     |> Repo.all()
   end
