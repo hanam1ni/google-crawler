@@ -110,7 +110,11 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => ">", "result_count_value" => "1"})
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => ">",
+          "result_count_value" => "1"
+        })
 
       assert keyword1_in_db.id == keyword1.id
     end
@@ -121,7 +125,11 @@ defmodule GoogleCrawler.KeywordsTest do
       keyword2 = insert(:keyword, user: user)
       insert(:search_result, url: "example1.com", keyword: keyword1)
 
-      [keyword2_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "<", "result_count_value" => "1"})
+      [keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "<",
+          "result_count_value" => "1"
+        })
 
       assert keyword2_in_db.id == keyword2.id
     end
@@ -133,7 +141,11 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "=", "result_count_value" => "2"})
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "=",
+          "result_count_value" => "2"
+        })
 
       assert keyword1_in_db.id == keyword1.id
     end
@@ -145,7 +157,11 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db, keyword2_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "!", "result_count_value" => "1"})
+      [keyword1_in_db, keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "!",
+          "result_count_value" => "1"
+        })
 
       assert keyword1_in_db.id == keyword1.id
       assert keyword2_in_db.id == keyword2.id

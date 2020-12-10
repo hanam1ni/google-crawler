@@ -49,7 +49,8 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     |> refute_has(css(@selectors[:keyword_table_cell], text: keyword3.title))
   end
 
-  feature "filters keywords which search results match amount and operation by the given params", %{session: session} do
+  feature "filters keywords which search results match amount and operation by the given params",
+          %{session: session} do
     user = insert(:user)
     keyword1 = insert(:keyword, user: user)
     keyword2 = insert(:keyword, user: user)

@@ -1,0 +1,40 @@
+<div class="collapse keyword-filter" id="keywordFilter">
+  <div class="card card-body">
+    <form>
+      <div class="form-group row">
+        <div class="keyword-filter__item col-lg-4 col-6">
+          <label for="title">Keyword Title</label>
+          <input class="form-control" name="keyword_filter[title]" placeholder="apple, rocket"
+            value=<%= @params["keyword_filter"]["title"] %>>
+        </div>
+        <div class="keyword-filter__item col-lg-4 col-6">
+          <label for="url">URL in result</label>
+          <input class="form-control" name="keyword_filter[url]" placeholder="e.g. google, .com"
+            value=<%= @params["keyword_filter"]["url"] %>>
+        </div>
+        <div class="keyword-filter__item col-lg-2 col-6">
+          <label for="url">Result count</label>
+          <div class="row no-gutters">
+            <div class="col-6">
+              <select class="form-control" name="keyword_filter[result_count_operation]">
+                <option value=">" <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], ">") %>>>
+                </option>
+                <option value="<" <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "<") %>>
+                  <</option> <option value="="
+                    <%= operation_selected?(@params["keyword_filter"]["result_count_operation"], "=") %>>=
+                </option>
+              </select>
+            </div>
+            <div class="col-5 offset-1">
+              <input class="form-control" name="keyword_filter[result_count_value]" placeholder="0"
+                value=<%= @params["keyword_filter"]["result_count_value"] %>>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
