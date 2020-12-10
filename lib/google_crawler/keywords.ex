@@ -27,7 +27,7 @@ defmodule GoogleCrawler.Keywords do
       |> order_by([:id])
     )
     |> filter_by_result_count(compacted_params)
-    |> filter_by_ads_count(compacted_params)
+    |> filter_by_ad_count(compacted_params)
     |> Repo.all()
   end
 
@@ -116,19 +116,19 @@ defmodule GoogleCrawler.Keywords do
 
   defp filter_by_result_count(keywords, _), do: keywords
 
-  defp filter_by_ads_count(keywords, %{
-         "ads_count_operation" => ads_count_operation,
-         "ads_count_value" => ads_count_value
+  defp filter_by_ad_count(keywords, %{
+         "ad_count_operation" => ad_count_operation,
+         "ad_count_value" => ad_count_value
        }) do
-    {value, _} = Integer.parse(ads_count_value)
+    {value, _} = Integer.parse(ad_count_value)
 
-    case ads_count_operation do
-      ">" -> where(keywords, [k], fragment("? > ?", k.ads_count, ^value))
-      "<" -> where(keywords, [k], fragment("? < ?", k.ads_count, ^value))
-      "=" -> where(keywords, [k], fragment("? = ?", k.ads_count, ^value))
+    case ad_count_operation do
+      ">" -> where(keywords, [k], fragment("? > ?", k.ad_count, ^value))
+      "<" -> where(keywords, [k], fragment("? < ?", k.ad_count, ^value))
+      "=" -> where(keywords, [k], fragment("? = ?", k.ad_count, ^value))
       _ -> keywords
     end
   end
 
-  defp filter_by_ads_count(keywords, _), do: keywords
+  defp filter_by_ad_count(keywords, _), do: keywords
 end
