@@ -24,8 +24,8 @@ defmodule GoogleCrawlerWeb.KeywordViewTest do
       assert 10 == KeywordView.formatted_result_count(10)
     end
 
-     test "returns - if given nil in count" do
+    test "returns - if given nil in count" do
       assert "-" == KeywordView.formatted_result_count(nil)
-     end
+    end
   end
 end

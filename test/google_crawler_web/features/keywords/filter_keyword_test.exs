@@ -7,8 +7,9 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     button_submit_filter: "#keywordFilter button[type='submit']",
     input_title_filter: "input[name='keyword_filter[title]']",
     input_url_filter: "input[name='keyword_filter[url]']",
-    option_result_count_filter: "select[name='keyword_filter[result_count_operation]'] option[value='=']",
-    input_result_count_filter: "input[name='keyword_filter[result_count_value]']",
+    option_result_count_filter:
+      "select[name='keyword_filter[result_count_operation]'] option[value='=']",
+    input_result_count_filter: "input[name='keyword_filter[result_count_value]']"
   }
 
   feature "filters keywords contain title by the given title", %{session: session} do
@@ -49,7 +50,8 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     |> refute_has(css(@selectors[:keyword_table_cell], text: keyword3.title))
   end
 
-  feature "filters keywords which search results match amount and operation by the given params", %{session: session} do
+  feature "filters keywords which search results match amount and operation by the given params",
+          %{session: session} do
     user = insert(:user)
     keyword1 = insert(:keyword, user: user)
     keyword2 = insert(:keyword, user: user)
