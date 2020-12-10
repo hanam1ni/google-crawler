@@ -1,20 +1,59 @@
-# GoogleCrawler
+# GoogleCrawler 👾
 
-To start your Phoenix server:
+**GoogleCrawler** is a web application built with **Elixir** and **Phoenix** framework providing search result scraping and parsing to generate the report.
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+- 👮‍♀️ Google OAuth authentication.
+- 📝 Support single keyword input or bulk keywords uploaded in .csv format.
+- 📫 API endpoints for CRUD operation.
+- 🔎 Keyword searching with multiple filter options (By keyword title, search result URL, amount of result, and ads contain in search result)
+- ⚡️ Integrate with Github action for testing and deploying to Staging and Production environment
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### Live application demo
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- Staging: https://google-result-crawler-staging.herokuapp.com/
 
-## Learn more
+- Production: https://google-result-crawler.herokuapp.com/
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Get started
+
+### Requirements
+
+- Docker
+- Elixir > 1.10.4
+- Chromedriver
+
+### Setup
+
+Setup the development environment with docker
+```
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+Install dependencies
+```
+mix deps.get
+```
+
+Setup and migrate database
+```
+mix ecto.setup
+```
+
+Install Node.js dependencies inside assets directory
+```
+cd assets
+npm install
+```
+ 
+Start Phoenix application at `localhost:4000`
+```
+mix phx.server
+```
+
+Check [Postman collection](https://documenter.getpostman.com/view/2327735/TVmTdFRF) for API endpoints detail.
+## Test
+
+After Chromedriver is installed, to run UI testing and Unit testing simply run
+```
+mix test
+```
