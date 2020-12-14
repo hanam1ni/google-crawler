@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.SearchResultsTest do
-  use GoogleCrawler.DataCase
+  use GoogleCrawler.DataCase, async: true
 
   alias GoogleCrawler.SearchResults
   alias GoogleCrawler.SearchResults.SearchResult

@@ -39,3 +39,7 @@ config :google_crawler, GoogleCrawlerWeb.Endpoint,
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
+
+config :google_crawler, GoogleCrawler.Tokenizer,
+  issuer: "google_crawler",
+  secret_key: System.get_env("GUARDIAN_SECRET")

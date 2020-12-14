@@ -31,3 +31,7 @@ config :wallaby,
   driver: Wallaby.Chrome,
   screenshot_dir: "tmp/wallaby",
   screenshot_on_failure: true
+
+config :google_crawler, GoogleCrawler.Tokenizer,
+  issuer: "google_crawler",
+  secret_key: "1muiptiZyuj26RxVeJWEsVTaYFkQ7/tW0eOQT1NAG4j9AZHxGgFO3PsbGAwiWPhw"

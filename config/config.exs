@@ -32,7 +32,18 @@ import_config "#{Mix.env()}.exs"
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, []}
+    google:
+      {Ueberauth.Strategy.Google,
+       [
+         request_path: "/auth/google",
+         callback_path: "/auth/google/callback"
+       ]},
+    google:
+      {Ueberauth.Strategy.Google,
+       [
+         request_path: "/api/auth/google",
+         callback_path: "/api/auth/google/callback"
+       ]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,

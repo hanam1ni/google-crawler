@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.UserFactory do
-  alias GoogleCrawler.User
+  alias GoogleCrawler.Identities.User
 
   defmacro __using__(_opts) do
     quote do

@@ -12,7 +12,7 @@ defmodule GoogleCrawlerWeb.FeatureCase do
 
       def login_as(session, %{email: email}) do
         session
-        |> visit("/auth/test_provider/callback?signin_as=#{email}")
+        |> visit("/auth/test_provider/callback?sign_in_as=#{email}")
       end
     end
   end

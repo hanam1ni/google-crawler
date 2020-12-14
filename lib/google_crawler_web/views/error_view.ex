@@ -13,4 +13,11 @@ defmodule GoogleCrawlerWeb.ErrorView do
   def template_not_found(template, _assigns) do
     Phoenix.Controller.status_message_from_template(template)
   end
+
+  def render("error.json", %{status: status}) do
+    %{
+      object: "error",
+      code: status
+    }
+  end
 end

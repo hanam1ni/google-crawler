@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.KeywordsTest do
-  use GoogleCrawler.DataCase
+  use GoogleCrawler.DataCase, async: true
 
   alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.{Keyword, ScraperSupervisor}
