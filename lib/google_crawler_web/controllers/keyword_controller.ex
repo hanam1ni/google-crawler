@@ -12,9 +12,15 @@ defmodule GoogleCrawlerWeb.KeywordController do
   def new(conn, _params), do: render(conn, "new.html")
 
   def show(conn, %{"id" => keyword_id}) do
-    keyword = Keywords.get_keyword_by_id(keyword_id)
+    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
+      nil ->
+        conn
+        |> put_flash(:error, "Keyword not found.")
+        |> redirect(to: Routes.keyword_path(conn, :index))
 
-    render(conn, "show.html", keyword: keyword)
+      keyword ->
+        render(conn, "show.html", keyword: keyword)
+    end
   end
 
   def create(conn, keyword_params) do
@@ -54,15 +60,17 @@ defmodule GoogleCrawlerWeb.KeywordController do
   end
 
   def delete(conn, %{"id" => keyword_id}) do
-    Keywords.delete_keyword(keyword_id)
-    |> case do
-      {:ok, _} ->
+    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
+      nil ->
         conn
-        |> put_flash(:info, "Keyword deleted successfully.")
+        |> put_flash(:error, "Something went wrong, please try again")
         |> redirect(to: Routes.keyword_path(conn, :index))
 
-      {:error, _keyword} ->
+      keyword ->
+        Keywords.delete_keyword(keyword)
+
         conn
+        |> put_flash(:info, "Keyword deleted successfully.")
         |> redirect(to: Routes.keyword_path(conn, :index))
     end
   end

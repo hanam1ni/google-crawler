@@ -1,5 +1,5 @@
 defmodule GoogleCrawler.KeywordsTest do
-  use GoogleCrawler.DataCase
+  use GoogleCrawler.DataCase, async: true
 
   alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.{Keyword, ScraperSupervisor}
@@ -29,13 +29,17 @@ defmodule GoogleCrawler.KeywordsTest do
     test "deletes the given keyword" do
       keyword = insert(:keyword)
 
-      {:ok, _} = Keywords.delete_keyword(keyword.id)
+      {:ok, _} = Keywords.delete_keyword(keyword)
 
       assert [] = Repo.all(Keyword)
     end
 
     test "raises errors if the given keyword does not exist" do
-      assert_raise Ecto.NoResultsError, fn -> Keywords.delete_keyword(999) end
+      keyword = insert(:keyword)
+
+      Repo.delete(keyword)
+
+      assert_raise Ecto.StaleEntryError, fn -> Keywords.delete_keyword(keyword) end
     end
   end
 
@@ -82,15 +86,16 @@ defmodule GoogleCrawler.KeywordsTest do
     end
   end
 
-  describe "get_keyword_by_id/1" do
-    test "returns keyword by the given id" do
-      keyword = insert(:keyword)
+  describe "get_keyword_for_user/1" do
+    test "returns keyword by the given id and user id" do
+      user = insert(:user)
+      keyword = insert(:keyword, user: user)
 
-      result_keyword = Keywords.get_keyword_by_id(keyword.id)
+      result_keyword = Keywords.get_keyword_for_user(user.id, keyword.id)
 
       assert result_keyword.id == keyword.id
       assert result_keyword.title == keyword.title
-      assert result_keyword.user_id == keyword.user_id
+      assert result_keyword.user_id == user.id
     end
 
     test "returns with result report and preloads search_results" do
@@ -100,12 +105,26 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:ad_search_result, keyword: keyword)
       insert(:top_ad_search_result, keyword: keyword)
 
-      result_keyword = Keywords.get_keyword_by_id(keyword.id)
+      result_keyword = Keywords.get_keyword_for_user(user.id, keyword.id)
 
       assert length(result_keyword.search_results) == 3
       assert result_keyword.result_count == 3
       assert result_keyword.ad_count == 2
       assert result_keyword.top_ad_count == 1
+    end
+
+    test "returns nil if keyword not found" do
+      user = insert(:user)
+
+      assert nil == Keywords.get_keyword_for_user(user.id, "999")
+    end
+
+    test "returns nil if keyword does not belong to the given user" do
+      user1 = insert(:user)
+      user2 = insert(:user)
+      keyword = insert(:keyword, user: user2)
+
+      assert nil == Keywords.get_keyword_for_user(user1.id, keyword.id)
     end
   end
 

@@ -5,7 +5,7 @@ defmodule GoogleCrawlerWeb.Plugs.Tests.MockOauth do
 
   def call(conn, _default) do
     conn = Plug.Conn.fetch_query_params(conn)
-    email = Map.get(conn.query_params, "signin_as")
+    email = Map.get(conn.query_params, "sign_in_as")
 
     assign(conn, :ueberauth_auth, build_auth_payload(email))
   end

@@ -32,9 +32,24 @@ import_config "#{Mix.env()}.exs"
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, []}
+    google:
+      {Ueberauth.Strategy.Google,
+       [
+         request_path: "/auth/google",
+         callback_path: "/auth/google/callback"
+       ]},
+    google:
+      {Ueberauth.Strategy.Google,
+       [
+         request_path: "/api/auth/google",
+         callback_path: "/api/auth/google/callback"
+       ]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+
+config :jsonapi,
+  host: "localhost:4000",
+  namespace: "/api"

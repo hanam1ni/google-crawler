@@ -24,6 +24,7 @@ defmodule GoogleCrawlerWeb do
       import Plug.Conn
       import GoogleCrawlerWeb.Gettext
       alias GoogleCrawlerWeb.Router.Helpers, as: Routes
+      alias GoogleCrawlerWeb.ErrorHandler
     end
   end
 
@@ -32,6 +33,8 @@ defmodule GoogleCrawlerWeb do
       use Phoenix.View,
         root: "lib/google_crawler_web/templates",
         namespace: GoogleCrawlerWeb
+
+      use JSONAPI.View
 
       # Import convenience functions from controllers
       import Phoenix.Controller,

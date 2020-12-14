@@ -1,4 +1,4 @@
-defmodule GoogleCrawler.User do
+defmodule GoogleCrawler.Identities.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -17,5 +17,6 @@ defmodule GoogleCrawler.User do
     user
     |> cast(attrs, [:email, :provider, :token])
     |> validate_required([:email, :provider, :token])
+    |> unique_constraint(:email)
   end
 end

@@ -2,6 +2,8 @@ defmodule GoogleCrawler.Keywords.ScraperWorkerTest do
   use GoogleCrawler.DataCase
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
+  setup :set_mimic_global
+
   alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.Keywords.ScraperWorker
   alias GoogleCrawler.Repo

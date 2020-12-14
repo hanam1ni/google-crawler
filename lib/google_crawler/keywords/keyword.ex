@@ -23,7 +23,7 @@ defmodule GoogleCrawler.Keywords.Keyword do
     field :ad_count, :integer, virtual: true
     field :top_ad_count, :integer, virtual: true
 
-    belongs_to :user, GoogleCrawler.User
+    belongs_to :user, GoogleCrawler.Identities.User
     has_many :search_results, GoogleCrawler.SearchResults.SearchResult
 
     timestamps()

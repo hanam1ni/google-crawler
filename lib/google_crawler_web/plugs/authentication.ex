@@ -3,7 +3,7 @@ defmodule GoogleCrawlerWeb.Plugs.Authentication do
   import Phoenix.Controller
 
   alias GoogleCrawler.Repo
-  alias GoogleCrawler.User
+  alias GoogleCrawler.Identities.User
   alias GoogleCrawlerWeb.Router.Helpers, as: Routes
 
   def init(default), do: default
