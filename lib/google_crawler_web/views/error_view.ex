@@ -1,6 +1,8 @@
 defmodule GoogleCrawlerWeb.ErrorView do
   use GoogleCrawlerWeb, :view
 
+  alias Ecto.Changeset
+
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.
   # def render("500.html", _assigns) do
@@ -14,10 +16,22 @@ defmodule GoogleCrawlerWeb.ErrorView do
     Phoenix.Controller.status_message_from_template(template)
   end
 
+  def render("error.json", %{status: status, changeset: %Changeset{} = changeset}) do
+    %{
+      object: "error",
+      code: status,
+      details: translate_errors(changeset)
+    }
+  end
+
   def render("error.json", %{status: status}) do
     %{
       object: "error",
       code: status
     }
+  end
+
+  defp translate_errors(changeset) do
+    Changeset.traverse_errors(changeset, &translate_error/1)
   end
 end

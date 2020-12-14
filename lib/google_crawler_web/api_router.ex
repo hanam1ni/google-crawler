@@ -16,10 +16,15 @@ defmodule GoogleCrawlerWeb.ApiRouter do
     plug GoogleCrawlerWeb.Plugs.ApiAuthentication
   end
 
-  scope "/api", GoogleCrawlerWeb.Api do
-    pipe_through [:api, :authentication]
+  pipeline :json_api_deserialize do
+    plug JSONAPI.Deserializer
+    plug JSONAPI.UnderscoreParameters
+  end
 
-    resources "/keyword", KeywordController, only: [:index, :show]
+  scope "/api", GoogleCrawlerWeb.Api do
+    pipe_through [:api, :authentication, :json_api_deserialize]
+
+    resources "/keyword", KeywordController, only: [:index, :show, :create]
   end
 
   scope "/api", GoogleCrawlerWeb.Api do
