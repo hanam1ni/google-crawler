@@ -42,4 +42,16 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
   end
 
   def create(conn, _), do: ErrorHandler.handle(conn, :bad_request)
+
+  def delete(conn, %{"id" => keyword_id}) do
+    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
+      nil ->
+        ErrorHandler.handle(conn, :not_found)
+
+      keyword ->
+        Keywords.delete_keyword(keyword)
+
+        send_resp(conn, :no_content, "")
+    end
+  end
 end

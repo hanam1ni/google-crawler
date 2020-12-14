@@ -210,4 +210,42 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
       verify!()
     end
   end
+
+  describe "delete/2" do
+    test "deletes user keyword when given valid keyword id", %{conn: conn} do
+      user = insert(:user)
+      keyword = insert(:keyword, user: user)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> delete(Routes.keyword_path(conn, :delete, keyword))
+
+      assert response(conn, 204)
+    end
+
+    test "returns error when given keyword does not belong to user", %{conn: conn} do
+      user = insert(:user)
+      other_user = insert(:user)
+      keyword = insert(:keyword, user: other_user)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> delete(Routes.keyword_path(conn, :delete, keyword))
+
+      assert %{"code" => "not_found", "object" => "error"} = json_response(conn, 404)
+    end
+
+    test "returns error when given keyword does not exist", %{conn: conn} do
+      user = insert(:user)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> delete(Routes.keyword_path(conn, :delete, "999"))
+
+      assert %{"code" => "not_found", "object" => "error"} = json_response(conn, 404)
+    end
+  end
 end

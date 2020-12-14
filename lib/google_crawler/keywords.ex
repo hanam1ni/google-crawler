@@ -12,9 +12,8 @@ defmodule GoogleCrawler.Keywords do
     |> Repo.insert()
   end
 
-  def delete_keyword(id) do
-    Repo.get!(Keyword, id)
-    |> Repo.delete()
+  def delete_keyword(%Keyword{} = keyword) do
+    Repo.delete(keyword)
   end
 
   def list_keywords(user_id, filter_params) do
