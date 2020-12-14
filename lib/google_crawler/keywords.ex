@@ -73,8 +73,8 @@ defmodule GoogleCrawler.Keywords do
     |> group_by([keyword], keyword.id)
     |> select_merge([search_results: sr], %{
       result_count: count(sr.id),
-      ad_count: fragment("sum(?::int)", sr.is_ad),
-      top_ad_count: fragment("sum(?::int)", sr.is_top_ad)
+      ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_ad),
+      top_ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_top_ad)
     })
   end
 

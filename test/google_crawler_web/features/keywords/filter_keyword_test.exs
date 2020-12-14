@@ -9,7 +9,9 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     input_url_filter: "input[name='keyword_filter[url]']",
     option_result_count_filter:
       "select[name='keyword_filter[result_count_operation]'] option[value='=']",
-    input_result_count_filter: "input[name='keyword_filter[result_count_value]']"
+    input_result_count_filter: "input[name='keyword_filter[result_count_value]']",
+    option_ad_count_filter: "select[name='keyword_filter[ad_count_operation]'] option[value='=']",
+    input_ad_count_filter: "input[name='keyword_filter[ad_count_value]']"
   }
 
   feature "filters keywords contain title by the given title", %{session: session} do
@@ -50,7 +52,7 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     |> refute_has(css(@selectors[:keyword_table_cell], text: keyword3.title))
   end
 
-  feature "filters keywords which search results match amount and operation by the given params",
+  feature "filters keywords which search results match result amount and operation by the given params",
           %{session: session} do
     user = insert(:user)
     keyword1 = insert(:keyword, user: user)
@@ -65,6 +67,26 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     |> click(css(@selectors[:button_keyword_filter]))
     |> click(css(@selectors[:option_result_count_filter]))
     |> fill_in(css(@selectors[:input_result_count_filter]), with: "2")
+    |> click(css(@selectors[:button_submit_filter]))
+    |> assert_has(css(@selectors[:keyword_table_cell], text: keyword1.title))
+    |> refute_has(css(@selectors[:keyword_table_cell], text: keyword2.title))
+  end
+
+  feature "filters keywords which search results match ad amount and operation by the given params",
+          %{session: session} do
+    user = insert(:user)
+    keyword1 = insert(:keyword, user: user)
+    keyword2 = insert(:keyword, user: user)
+
+    insert(:search_result, keyword: keyword1, is_ad: true)
+    insert(:search_result, keyword: keyword1, is_ad: true)
+
+    session
+    |> login_as(user)
+    |> visit("/keyword")
+    |> click(css(@selectors[:button_keyword_filter]))
+    |> click(css(@selectors[:option_ad_count_filter]))
+    |> fill_in(css(@selectors[:input_ad_count_filter]), with: "2")
     |> click(css(@selectors[:button_submit_filter]))
     |> assert_has(css(@selectors[:keyword_table_cell], text: keyword1.title))
     |> refute_has(css(@selectors[:keyword_table_cell], text: keyword2.title))
