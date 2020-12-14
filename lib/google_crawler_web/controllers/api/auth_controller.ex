@@ -9,10 +9,10 @@ defmodule GoogleCrawlerWeb.Api.AuthController do
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _) do
     user_params = %{token: auth.credentials.token, email: auth.info.email, provider: "google"}
 
-    signin(conn, user_params)
+    sign_in(conn, user_params)
   end
 
-  defp signin(conn, changeset) do
+  defp sign_in(conn, changeset) do
     case insert_or_update_user(changeset) do
       {:ok, user} ->
         {:ok, access_token, _} = Tokenizer.generate_access_token(user)

@@ -10,7 +10,7 @@ defmodule GoogleCrawlerWeb.AuthController do
     user_params = %{token: auth.credentials.token, email: auth.info.email, provider: "google"}
     changeset = User.changeset(%User{}, user_params)
 
-    signin(conn, changeset)
+    sign_in(conn, changeset)
   end
 
   def delete(conn, _params) do
@@ -20,7 +20,7 @@ defmodule GoogleCrawlerWeb.AuthController do
     |> redirect(to: Routes.page_path(conn, :index))
   end
 
-  defp signin(conn, changeset) do
+  defp sign_in(conn, changeset) do
     case insert_or_update_user(changeset) do
       {:ok, user} ->
         conn
