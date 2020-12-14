@@ -5,10 +5,10 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
   alias GoogleCrawler.Keywords.Keyword
   alias GoogleCrawler.SearchResults
 
-  @top_ad_selector "#taw .ads-fr a"
-  @ad_selector "#bottomads .ads-fr a"
-  @result_selector "#search .rc a"
-  @result_title_selector ["h3", "div"]
+  @top_ad_selector "#taw .uEierd a"
+  @ad_selector "#bottomads .uEierd a"
+  @result_selector ".rc .yuRUbf a"
+  @result_title_selector ["h3 span", "div"]
   @result_url_property "href"
 
   # Client Interface
@@ -90,8 +90,7 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
       {_property, result_url} =
         Enum.find(attributes, fn {property, _} -> property == @result_url_property end)
 
-      {_tag, _attributes, [title | _]} =
-        Enum.find(child_node, fn {tag, _, _} -> Enum.member?(@result_title_selector, tag) end)
+      [{_tag, _attributes, [title | _]} | _] = Floki.find(child_node, Enum.join(@result_title_selector, ","))
 
       Map.merge(%{url: result_url, title: title}, optional_params)
     end)
