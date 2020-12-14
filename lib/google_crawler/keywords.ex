@@ -25,10 +25,10 @@ defmodule GoogleCrawler.Keywords do
     |> Repo.all()
   end
 
-  def get_keyword_by_id(id) do
+  def get_keyword_for_user(user_id, id) do
     keyword_with_result_report()
     |> preload([:search_results])
-    |> Repo.get(id)
+    |> Repo.get_by(id: id, user_id: user_id)
   end
 
   def scrape_keyword do

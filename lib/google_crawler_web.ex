@@ -24,6 +24,7 @@ defmodule GoogleCrawlerWeb do
       import Plug.Conn
       import GoogleCrawlerWeb.Gettext
       alias GoogleCrawlerWeb.Router.Helpers, as: Routes
+      alias GoogleCrawlerWeb.ErrorHandler
     end
   end
 
