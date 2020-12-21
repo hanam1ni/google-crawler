@@ -19,8 +19,12 @@
         <form>
           <div class="form-group row">
             <div class="col-4">
+              <label for="title">Keyword Title</label>
+              <input class="form-control" name="keyword_filter[title]" placeholder="apple, rocket" value=<%= @params["keyword_filter"]["title"] %> >
+            </div>
+            <div class="col-4">
               <label for="url">URL in result</label>
-              <input class="form-control" name="keyword_filter[url]" placeholder='e.g. "google", ".com"' value=<%= @params["url"] %> >
+              <input class="form-control" name="keyword_filter[url]" placeholder="e.g. google, .com" value=<%= @params["keyword_filter"]["url"] %> >
             </div>
           </div>
           <button type="submit" class="btn btn-success">

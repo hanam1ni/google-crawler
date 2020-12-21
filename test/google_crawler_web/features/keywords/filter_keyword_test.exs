@@ -5,8 +5,26 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     keyword_table_cell: ".table-keyword td",
     button_keyword_filter: "a[href='#keywordFilter']",
     button_submit_filter: "#keywordFilter button[type='submit']",
+    input_title_filter: "input[name='keyword_filter[title]']",
     input_url_filter: "input[name='keyword_filter[url]']"
   }
+
+  feature "filters keywords contain title by the given title", %{session: session} do
+    user = insert(:user)
+    keyword1 = insert(:keyword, title: "apple", user: user)
+    keyword2 = insert(:keyword, title: "rocket", user: user)
+    keyword3 = insert(:keyword, title: "rock climbing", user: user)
+
+    session
+    |> login_as(user)
+    |> visit("/keyword")
+    |> click(css(@selectors[:button_keyword_filter]))
+    |> fill_in(css(@selectors[:input_title_filter]), with: "rock")
+    |> click(css(@selectors[:button_submit_filter]))
+    |> assert_has(css(@selectors[:keyword_table_cell], text: keyword2.title))
+    |> assert_has(css(@selectors[:keyword_table_cell], text: keyword3.title))
+    |> refute_has(css(@selectors[:keyword_table_cell], text: keyword1.title))
+  end
 
   feature "filters keywords contain result url by the given url", %{session: session} do
     user = insert(:user)
