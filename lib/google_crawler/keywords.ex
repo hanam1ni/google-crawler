@@ -17,10 +17,17 @@ defmodule GoogleCrawler.Keywords do
   end
 
   def list_keywords(user_id, filter_params) do
-    keyword_with_result_report()
-    |> filter_by_url(filter_params)
-    |> where(user_id: ^user_id)
-    |> order_by([:id])
+    compacted_params = compact_params(filter_params)
+
+    subquery(
+      keyword_with_result_report()
+      |> where(user_id: ^user_id)
+      |> filter_by_title(compacted_params)
+      |> filter_by_url(compacted_params)
+      |> order_by([:id])
+    )
+    |> filter_by_result_count(compacted_params)
+    |> filter_by_ad_count(compacted_params)
     |> Repo.all()
   end
 
@@ -66,10 +73,25 @@ defmodule GoogleCrawler.Keywords do
     |> group_by([keyword], keyword.id)
     |> select_merge([search_results: sr], %{
       result_count: count(sr.id),
-      ad_count: fragment("sum(?::int)", sr.is_ad),
-      top_ad_count: fragment("sum(?::int)", sr.is_top_ad)
+      ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_ad),
+      top_ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_top_ad)
     })
   end
+
+  defp compact_params(nil), do: nil
+
+  defp compact_params(params) do
+    params
+    |> Enum.filter(fn {_key, value} -> value !== "" end)
+    |> Enum.into(%{})
+  end
+
+  defp filter_by_title(keywords, %{"title" => title}) do
+    keywords
+    |> where([k], fragment("? LIKE ?", k.title, ^"%#{title}%"))
+  end
+
+  defp filter_by_title(keywords, _), do: keywords
 
   defp filter_by_url(keywords, %{"url" => url}) do
     keywords
@@ -77,4 +99,36 @@ defmodule GoogleCrawler.Keywords do
   end
 
   defp filter_by_url(keywords, _), do: keywords
+
+  defp filter_by_result_count(keywords, %{
+         "result_count_operation" => result_count_operation,
+         "result_count_value" => result_count_value
+       }) do
+    {value, _} = Integer.parse(result_count_value)
+
+    case result_count_operation do
+      ">" -> where(keywords, [k], fragment("? > ?", k.result_count, ^value))
+      "<" -> where(keywords, [k], fragment("? < ?", k.result_count, ^value))
+      "=" -> where(keywords, [k], fragment("? = ?", k.result_count, ^value))
+      _ -> keywords
+    end
+  end
+
+  defp filter_by_result_count(keywords, _), do: keywords
+
+  defp filter_by_ad_count(keywords, %{
+         "ad_count_operation" => ad_count_operation,
+         "ad_count_value" => ad_count_value
+       }) do
+    {value, _} = Integer.parse(ad_count_value)
+
+    case ad_count_operation do
+      ">" -> where(keywords, [k], fragment("? > ?", k.ad_count, ^value))
+      "<" -> where(keywords, [k], fragment("? < ?", k.ad_count, ^value))
+      "=" -> where(keywords, [k], fragment("? = ?", k.ad_count, ^value))
+      _ -> keywords
+    end
+  end
+
+  defp filter_by_ad_count(keywords, _), do: keywords
 end
