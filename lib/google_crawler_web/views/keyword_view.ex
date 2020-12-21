@@ -1,6 +1,14 @@
 defmodule GoogleCrawlerWeb.KeywordView do
   use GoogleCrawlerWeb, :view
 
+  def operation_selected?(selected_operator, operator) do
+    if selected_operator == operator do
+      "selected"
+    else
+      ""
+    end
+  end
+
   def formatted_status(status) do
     status
     |> String.capitalize()
