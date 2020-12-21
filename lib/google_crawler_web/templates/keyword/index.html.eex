@@ -37,7 +37,7 @@
                   </select>
                 </div>
                 <div class="col-5 offset-1">
-                  <input class="form-control" name="keyword_filter[result_count_value]" placeholder='0' value=<%= @params["keyword_filter"]["result_count_value"] %> >
+                  <input class="form-control" name="keyword_filter[result_count_value]" placeholder="0" value=<%= @params["keyword_filter"]["result_count_value"] %> >
                 </div>
               </div>
             </div>
