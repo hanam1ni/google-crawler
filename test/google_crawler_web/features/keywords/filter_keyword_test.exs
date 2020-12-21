@@ -7,7 +7,7 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     button_submit_filter: "#keywordFilter button[type='submit']",
     input_title_filter: "input[name='keyword_filter[title]']",
     input_url_filter: "input[name='keyword_filter[url]']",
-    option_result_count_filter: "select[name='keyword_filter[result_count_operation]'] option[value='=']",
+    equal_option_result_count_filter: "select[name='keyword_filter[result_count_operation]'] option[value='=']",
     input_result_count_filter: "input[name='keyword_filter[result_count_value]']",
   }
 
@@ -61,7 +61,7 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     |> login_as(user)
     |> visit("/keyword")
     |> click(css(@selectors[:button_keyword_filter]))
-    |> click(css(@selectors[:option_result_count_filter]))
+    |> click(css(@selectors[:equal_option_result_count_filter]))
     |> fill_in(css(@selectors[:input_result_count_filter]), with: "2")
     |> click(css(@selectors[:button_submit_filter]))
     |> assert_has(css(@selectors[:keyword_table_cell], text: keyword1.title))
