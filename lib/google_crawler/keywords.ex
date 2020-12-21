@@ -22,11 +22,12 @@ defmodule GoogleCrawler.Keywords do
     subquery(
       keyword_with_result_report()
       |> where(user_id: ^user_id)
+      |> filter_by_title(compacted_params)
       |> filter_by_url(compacted_params)
       |> order_by([:id])
     )
-    |> filter_by_title(compacted_params)
     |> filter_by_result_count(compacted_params)
+    |> filter_by_ad_count(compacted_params)
     |> Repo.all()
   end
 
@@ -72,8 +73,8 @@ defmodule GoogleCrawler.Keywords do
     |> group_by([keyword], keyword.id)
     |> select_merge([search_results: sr], %{
       result_count: count(sr.id),
-      ad_count: fragment("sum(?::int)", sr.is_ad),
-      top_ad_count: fragment("sum(?::int)", sr.is_top_ad)
+      ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_ad),
+      top_ad_count: fragment("COALESCE(SUM(?::int), 0)", sr.is_top_ad)
     })
   end
 
@@ -114,4 +115,20 @@ defmodule GoogleCrawler.Keywords do
   end
 
   defp filter_by_result_count(keywords, _), do: keywords
+
+  defp filter_by_ad_count(keywords, %{
+         "ad_count_operation" => ad_count_operation,
+         "ad_count_value" => ad_count_value
+       }) do
+    {value, _} = Integer.parse(ad_count_value)
+
+    case ad_count_operation do
+      ">" -> where(keywords, [k], fragment("? > ?", k.ad_count, ^value))
+      "<" -> where(keywords, [k], fragment("? < ?", k.ad_count, ^value))
+      "=" -> where(keywords, [k], fragment("? = ?", k.ad_count, ^value))
+      _ -> keywords
+    end
+  end
+
+  defp filter_by_ad_count(keywords, _), do: keywords
 end

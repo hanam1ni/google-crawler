@@ -110,7 +110,11 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => ">", "result_count_value" => "1"})
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => ">",
+          "result_count_value" => "1"
+        })
 
       assert keyword1_in_db.id == keyword1.id
     end
@@ -121,7 +125,11 @@ defmodule GoogleCrawler.KeywordsTest do
       keyword2 = insert(:keyword, user: user)
       insert(:search_result, url: "example1.com", keyword: keyword1)
 
-      [keyword2_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "<", "result_count_value" => "1"})
+      [keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "<",
+          "result_count_value" => "1"
+        })
 
       assert keyword2_in_db.id == keyword2.id
     end
@@ -133,7 +141,11 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "=", "result_count_value" => "2"})
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "=",
+          "result_count_value" => "2"
+        })
 
       assert keyword1_in_db.id == keyword1.id
     end
@@ -145,7 +157,77 @@ defmodule GoogleCrawler.KeywordsTest do
       insert(:search_result, url: "example1.com", keyword: keyword1)
       insert(:search_result, url: "example2.net", keyword: keyword1)
 
-      [keyword1_in_db, keyword2_in_db] = Keywords.list_keywords(user.id, %{"result_count_operation" => "!", "result_count_value" => "1"})
+      [keyword1_in_db, keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "result_count_operation" => "!",
+          "result_count_value" => "1"
+        })
+
+      assert keyword1_in_db.id == keyword1.id
+      assert keyword2_in_db.id == keyword2.id
+    end
+  end
+
+  describe "list_keywords/1 with ad count filtered" do
+    test "filters keywords with search results more than the given amount if given > in operation" do
+      user = insert(:user)
+      keyword1 = insert(:keyword, user: user)
+      _keyword2 = insert(:keyword, user: user)
+      insert(:search_result, url: "example1.com", keyword: keyword1, is_ad: true)
+      insert(:search_result, url: "example2.net", keyword: keyword1, is_ad: true)
+
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "ad_count_operation" => ">",
+          "ad_count_value" => "1"
+        })
+
+      assert keyword1_in_db.id == keyword1.id
+    end
+
+    test "filters keywords with search results less than the given amount if given < in operation" do
+      user = insert(:user)
+      keyword1 = insert(:keyword, user: user)
+      keyword2 = insert(:keyword, user: user)
+      insert(:search_result, url: "example1.com", keyword: keyword1, is_ad: true)
+
+      [keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "ad_count_operation" => "<",
+          "ad_count_value" => "1"
+        })
+
+      assert keyword2_in_db.id == keyword2.id
+    end
+
+    test "filters keywords with search results equal to the given amount if given = in operation" do
+      user = insert(:user)
+      keyword1 = insert(:keyword, user: user)
+      _keyword2 = insert(:keyword, user: user)
+      insert(:search_result, url: "example1.com", keyword: keyword1, is_ad: true)
+      insert(:search_result, url: "example2.net", keyword: keyword1, is_ad: true)
+
+      [keyword1_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "ad_count_operation" => "=",
+          "ad_count_value" => "2"
+        })
+
+      assert keyword1_in_db.id == keyword1.id
+    end
+
+    test "does not filter keywords if given invalid operation" do
+      user = insert(:user)
+      keyword1 = insert(:keyword, user: user)
+      keyword2 = insert(:keyword, user: user)
+      insert(:search_result, url: "example1.com", keyword: keyword1)
+      insert(:search_result, url: "example2.net", keyword: keyword1)
+
+      [keyword1_in_db, keyword2_in_db] =
+        Keywords.list_keywords(user.id, %{
+          "ad_count_operation" => "!",
+          "ad_count_value" => "1"
+        })
 
       assert keyword1_in_db.id == keyword1.id
       assert keyword2_in_db.id == keyword2.id
