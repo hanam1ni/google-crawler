@@ -7,9 +7,11 @@ defmodule GoogleCrawlerWeb.FilterKeywordTest do
     button_submit_filter: "#keywordFilter button[type='submit']",
     input_title_filter: "input[name='keyword_filter[title]']",
     input_url_filter: "input[name='keyword_filter[url]']",
-    equal_option_result_count_filter: "select[name='keyword_filter[result_count_operation]'] option[value='=']",
+    equal_option_result_count_filter:
+      "select[name='keyword_filter[result_count_operation]'] option[value='=']",
     input_result_count_filter: "input[name='keyword_filter[result_count_value]']",
-    equal_option_ad_count_filter: "select[name='keyword_filter[ad_count_operation]'] option[value='=']",
+    equal_option_ad_count_filter:
+      "select[name='keyword_filter[ad_count_operation]'] option[value='=']",
     input_ad_count_filter: "input[name='keyword_filter[ad_count_value]']"
   }
 

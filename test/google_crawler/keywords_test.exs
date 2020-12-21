@@ -190,7 +190,6 @@ defmodule GoogleCrawler.KeywordsTest do
       keyword1 = insert(:keyword, user: user)
       keyword2 = insert(:keyword, user: user)
       insert(:search_result, url: "example1.com", keyword: keyword1, is_ad: true)
-      insert(:search_result, url: "example2.net", keyword: keyword1, is_ad: true)
 
       [keyword2_in_db] =
         Keywords.list_keywords(user.id, %{
