@@ -28,6 +28,7 @@ defmodule GoogleCrawlerWeb.Router do
     pipe_through :authentication
 
     resources "/keyword", KeywordController, only: [:index, :show, :new, :create, :delete]
+    get "/keyword/:id/result_preview", KeywordController, :result_preview
     post "/keyword/import", KeywordController, :import, as: :keyword_import
   end
 
