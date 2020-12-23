@@ -74,18 +74,4 @@ defmodule GoogleCrawlerWeb.KeywordController do
         |> redirect(to: Routes.keyword_path(conn, :index))
     end
   end
-
-  def result_preview(conn, %{"id" => keyword_id}) do
-    case Keywords.get_keyword_for_user(conn.assigns.user.id, keyword_id) do
-      nil ->
-        conn
-        |> put_flash(:error, "Keyword not found.")
-        |> redirect(to: Routes.keyword_path(conn, :index))
-
-      keyword ->
-        conn
-        |> put_layout(false)
-        |> render("result_preview.html", result_page_html: keyword.result_page_html)
-    end
-  end
 end
