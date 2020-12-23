@@ -2,14 +2,13 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
   use GenServer, restart: :transient
 
   alias GoogleCrawler.Keywords
-  alias GoogleCrawler.Keywords.Keyword
+  alias GoogleCrawler.Keywords.Keyword, as: GoogleKeyword
   alias GoogleCrawler.SearchResults
 
-  @top_ad_selector "#taw .ads-fr a"
-  @ad_selector "#bottomads .ads-fr a"
-  @result_selector "#search .rc a"
-  @result_title_selector ["h3", "div"]
-  @result_url_property "href"
+  @top_ad_selector %{item: "#taw .d5oMvf a", title: ".cfxYMc"}
+  @bottom_ad_selector %{item: "#bottomads .d5oMvf a", title: ".cfxYMc"}
+  @result_selector %{item: ".yuRUbf a", title: ".LC20lb span"}
+  @url_property "href"
 
   # Client Interface
   @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
@@ -26,24 +25,24 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
 
   def handle_cast({:parsing}, {keyword}) do
     keyword
-    |> Keywords.update_keyword_status(Keyword.statuses().parsing)
+    |> Keywords.update_keyword_status(GoogleKeyword.statuses().parsing)
     |> parse_result_page
     |> case do
       {:ok, result_params} ->
-        save_result(result_params, keyword)
-        Keywords.update_keyword_status(keyword, Keyword.statuses().parse_completed)
+        save_result(result_params, keyword.id)
+        Keywords.update_keyword_status(keyword, GoogleKeyword.statuses().parse_completed)
 
       {:error} ->
-        Keywords.update_keyword_status(keyword, Keyword.statuses().parse_failed)
+        Keywords.update_keyword_status(keyword, GoogleKeyword.statuses().parse_failed)
     end
 
     {:noreply, {keyword}}
   end
 
-  defp save_result(result_params, keyword) do
+  defp save_result(result_params, keyword_id) do
     Enum.each(result_params, fn params ->
       params
-      |> Map.put(:keyword_id, keyword.id)
+      |> Map.put(:keyword_id, keyword_id)
       |> SearchResults.create_search_result()
     end)
   end
@@ -53,9 +52,9 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
     |> case do
       {:ok, document} ->
         result_params =
-          result_to_params([], document, @top_ad_selector, %{is_ad: true, is_top_ad: true})
-          |> result_to_params(document, @ad_selector, %{is_ad: true})
-          |> result_to_params(document, @result_selector)
+          build_result_params(document, @top_ad_selector, %{is_ad: true, is_top_ad: true})
+          |> Enum.concat(build_result_params(document, @bottom_ad_selector, %{is_ad: true}))
+          |> Enum.concat(build_result_params(document, @result_selector))
 
         {:ok, result_params}
 
@@ -64,36 +63,18 @@ defmodule GoogleCrawler.SearchResults.ParserWorker do
     end
   end
 
-  defp result_to_params(params, document, selector, optional_params \\ %{}) do
+  defp build_result_params(document, selector, optional_params \\ %{}) do
     document
-    |> find_element_by(selector)
-    |> filter_valid_result
-    |> build_params(optional_params)
-    |> Enum.concat(params)
-  end
+    |> Floki.find(selector.item)
+    |> Enum.map(fn {_, _, child_nodes} = result_item ->
+      [url] = Floki.attribute(result_item, @url_property)
 
-  defp find_element_by(document, selector) do
-    document
-    |> Floki.find(selector)
-  end
+      title =
+        child_nodes
+        |> Floki.find(selector.title)
+        |> Floki.text()
 
-  defp filter_valid_result(document) do
-    document
-    |> Enum.filter(fn {_tag, _attributes, child_node} ->
-      Floki.find(child_node, Enum.join(@result_title_selector, ",")) != []
-    end)
-  end
-
-  defp build_params(document, optional_params) do
-    document
-    |> Enum.map(fn {_tag, attributes, child_node} ->
-      {_property, result_url} =
-        Enum.find(attributes, fn {property, _} -> property == @result_url_property end)
-
-      {_tag, _attributes, [title | _]} =
-        Enum.find(child_node, fn {tag, _, _} -> Enum.member?(@result_title_selector, tag) end)
-
-      Map.merge(%{url: result_url, title: title}, optional_params)
+      Map.merge(%{url: url, title: title}, optional_params)
     end)
   end
 end
