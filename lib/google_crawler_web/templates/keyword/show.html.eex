@@ -39,18 +39,14 @@
       <%= if @keyword.result_page_html == nil do %>
         <button class="btn btn-secondary" role="button">Searching</button>
       <% else %>
-        <a class="btn btn-primary" data-toggle="collapse" href="#searchResult" role="button" aria-expanded="false">Search Result</a>
+        <a class="btn btn-primary" data-toggle="collapse" href="#searchResult" role="button" aria-expanded="false">Search Result HTML</a>
+        <a class="btn btn-info" href=<%= Routes.keyword_path(@conn, :result_preview, @keyword) %> target="_blank" ><i class="fas fa-glasses"></i>  Search Result Preview</a>
       <% end %>
     </p>
   </div>
 </div>
 <div class="row">
   <div class="col">
-    <div class="collapse" id="searchResult">
-      <div class="card card-body">
-        <%= @keyword.result_page_html %>
-      </div>
-    </div>
     <div class="collapse" id="searchResult">
       <div class="card card-body">
         <%= @keyword.result_page_html %>
