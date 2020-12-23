@@ -4,8 +4,8 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
   alias GoogleCrawler.Keywords
   alias GoogleCrawlerWeb
 
-  def index(conn, _params) do
-    keywords = Keywords.list_keywords(conn.assigns.user.id, %{})
+  def index(conn, params) do
+    keywords = Keywords.list_keywords(conn.assigns.user.id, params["keyword_filter"])
 
     conn
     |> put_status(:ok)

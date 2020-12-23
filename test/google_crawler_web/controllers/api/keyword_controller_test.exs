@@ -1,8 +1,9 @@
 defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
   use GoogleCrawlerWeb.ApiConnCase, async: true
 
-  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.{Keyword, ScraperSupervisor}
+  alias GoogleCrawler.Repo
 
   describe "index/2" do
     test "returns the keywords for the given user", %{conn: conn} do
@@ -35,6 +36,18 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
                  }
                ]
              } = json_response(conn, 200)
+    end
+
+    test "filters the keywords with the given params", %{conn: conn} do
+      %{id: user_id} = user = insert(:user)
+
+      expect(Keywords, :list_keywords, fn ^user_id, %{"url" => ".com"} -> [] end)
+
+      conn
+      |> login_as(user)
+      |> get(Routes.keyword_path(conn, :index), %{"keyword_filter" => %{"url" => ".com"}})
+
+      verify!()
     end
   end
 
