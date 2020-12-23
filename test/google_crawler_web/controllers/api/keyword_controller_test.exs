@@ -248,4 +248,26 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
       assert %{"code" => "not_found", "object" => "error"} = json_response(conn, 404)
     end
   end
+
+  describe "import/2" do
+    test "creates the keywords from uploaded keywords", %{conn: conn} do
+      user = insert(:user)
+
+      uploaded_keywords = %Plug.Upload{
+        path: "test/support/fixtures/data/keywords.csv",
+        filename: "keywords.csv"
+      }
+
+      GoogleCrawler.Keywords.ScraperSupervisor
+      |> stub(:start_child, fn keyword -> keyword end)
+
+      conn
+      |> login_as(user)
+      |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_keywords})
+
+      keywords = Keyword |> Repo.all()
+
+      assert length(keywords) == 3
+    end
+  end
 end
