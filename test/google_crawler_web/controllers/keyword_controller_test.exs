@@ -50,6 +50,22 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       assert html_response(conn, 200) =~ "#{keyword.title}"
       assert html_response(conn, 200) =~ "#{keyword.result_page_html}"
     end
+
+    test "redirects to keywords list with error message when the given keyword not found", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      other_user = insert(:user)
+      keyword = insert(:completed_scraped_keyword, user: other_user)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> get(Routes.keyword_path(conn, :show, keyword))
+
+      assert redirected_to(conn, 302) === Routes.keyword_path(conn, :index)
+      assert get_flash(conn, :error) === "Keyword not found."
+    end
   end
 
   describe "create/2" do
@@ -117,6 +133,43 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       keywords = Keyword |> Repo.all()
 
       assert length(keywords) == 0
+    end
+  end
+
+  describe "result_preview/2" do
+    test "renders page from the HTML result page", %{conn: conn} do
+      user = insert(:user)
+
+      keyword =
+        insert(:completed_scraped_keyword, user: user, result_page_html: "<h1>Search result</h1>")
+
+      conn =
+        conn
+        |> login_as(user)
+        |> get(Routes.keyword_path(conn, :result_preview, keyword))
+
+      assert html_response(conn, 200) =~ "Search result"
+    end
+
+    test "redirects to keywords list with error message when the given keyword not found", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      other_user = insert(:user)
+
+      keyword =
+        insert(:completed_scraped_keyword,
+          user: other_user,
+          result_page_html: "<h1>Search result</h1>"
+        )
+
+      conn =
+        conn
+        |> login_as(user)
+        |> get(Routes.keyword_path(conn, :result_preview, keyword))
+
+      assert redirected_to(conn, 302) === Routes.keyword_path(conn, :index)
+      assert get_flash(conn, :error) === "Keyword not found."
     end
   end
 end
