@@ -1,8 +1,9 @@
 defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
   use GoogleCrawlerWeb.ApiConnCase, async: true
 
-  alias GoogleCrawler.Repo
+  alias GoogleCrawler.Keywords
   alias GoogleCrawler.Keywords.{Keyword, ScraperSupervisor}
+  alias GoogleCrawler.Repo
 
   describe "index/2" do
     test "returns the keywords for the given user", %{conn: conn} do
@@ -35,6 +36,18 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
                  }
                ]
              } = json_response(conn, 200)
+    end
+
+    test "filters the keywords with the given params", %{conn: conn} do
+      %{id: user_id} = user = insert(:user)
+
+      expect(Keywords, :list_keywords, fn ^user_id, %{"url" => ".com"} -> [] end)
+
+      conn
+      |> login_as(user)
+      |> get(Routes.keyword_path(conn, :index), %{"keyword_filter" => %{"url" => ".com"}})
+
+      verify!()
     end
   end
 
@@ -246,6 +259,28 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
         |> delete(Routes.keyword_path(conn, :delete, "999"))
 
       assert %{"code" => "not_found", "object" => "error"} = json_response(conn, 404)
+    end
+  end
+
+  describe "import/2" do
+    test "creates the keywords from uploaded keywords", %{conn: conn} do
+      user = insert(:user)
+
+      uploaded_keywords = %Plug.Upload{
+        path: "test/support/fixtures/data/keywords.csv",
+        filename: "keywords.csv"
+      }
+
+      GoogleCrawler.Keywords.ScraperSupervisor
+      |> stub(:start_child, fn keyword -> keyword end)
+
+      conn
+      |> login_as(user)
+      |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_keywords})
+
+      keywords = Keyword |> Repo.all()
+
+      assert length(keywords) == 3
     end
   end
 end

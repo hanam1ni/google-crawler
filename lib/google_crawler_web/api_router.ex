@@ -28,6 +28,12 @@ defmodule GoogleCrawlerWeb.ApiRouter do
   end
 
   scope "/api", GoogleCrawlerWeb.Api do
+    pipe_through [:api, :authentication]
+
+    post "/keyword/import", KeywordController, :import, as: :keyword_import
+  end
+
+  scope "/api", GoogleCrawlerWeb.Api do
     pipe_through :api
 
     scope "/auth" do

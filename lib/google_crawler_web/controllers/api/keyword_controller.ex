@@ -4,8 +4,8 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
   alias GoogleCrawler.Keywords
   alias GoogleCrawlerWeb
 
-  def index(conn, _params) do
-    keywords = Keywords.list_keywords(conn.assigns.user.id, %{})
+  def index(conn, params) do
+    keywords = Keywords.list_keywords(conn.assigns.user.id, params["keyword_filter"])
 
     conn
     |> put_status(:ok)
@@ -53,5 +53,21 @@ defmodule GoogleCrawlerWeb.Api.KeywordController do
 
         send_resp(conn, :no_content, "")
     end
+  end
+
+  def import(conn, %{"keywords" => keywords}) do
+    keywords.path
+    |> File.stream!()
+    |> CSV.decode!()
+    |> Enum.each(fn [keyword_title] ->
+      Keywords.create_keyword(%{title: keyword_title, user_id: conn.assigns.user.id})
+      |> case do
+        {:ok, keyword} -> keyword
+      end
+    end)
+
+    Keywords.scrape_keyword()
+
+    send_resp(conn, :no_content, "")
   end
 end

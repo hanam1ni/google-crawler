@@ -19,7 +19,7 @@ defmodule GoogleCrawler.SearchResults.ParserWorkerTest do
       keyword = Repo.get(Keyword, keyword.id)
       search_result = Repo.all(SearchResult)
 
-      assert length(search_result) == 10
+      assert length(search_result) == 13
       assert keyword.status == Keyword.statuses().parse_completed
     end
   end
