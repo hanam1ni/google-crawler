@@ -41,4 +41,19 @@ defmodule GoogleCrawlerWeb.ErrorHandlerTest do
              }
     end
   end
+
+  describe "full_message/1" do
+    test "returns formatted error message" do
+      changeset = %Ecto.Changeset{
+        errors: [
+          title:
+            {"should be at least %{count} characters", [count: 6, validation: :length, min: 6]},
+          user_id: {"can't be blank", []}
+        ],
+        types: %{title: :string, user_id: :string}
+      }
+
+      assert ErrorHandler.full_message(changeset) === "Title should be at least 6 characters, User id can't be blank"
+    end
+  end
 end

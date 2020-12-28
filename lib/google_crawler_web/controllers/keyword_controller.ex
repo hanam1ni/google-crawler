@@ -35,8 +35,9 @@ defmodule GoogleCrawlerWeb.KeywordController do
         |> put_flash(:info, "Keyword created successfully.")
         |> redirect(to: Routes.keyword_path(conn, :show, keyword))
 
-      {:error, _changeset} ->
+      {:error, changeset} ->
         conn
+        |> put_flash(:error, ErrorHandler.full_message(changeset))
         |> redirect(to: Routes.keyword_path(conn, :new))
     end
   end

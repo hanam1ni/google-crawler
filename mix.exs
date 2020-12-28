@@ -52,6 +52,7 @@ defmodule GoogleCrawler.MixProject do
       {:csv, "~> 2.3"},
       {:guardian, "~> 1.0"},
       {:jsonapi, "~> 1.3"},
+      {:recase, "~> 0.5"},
       # Development
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       # Test
