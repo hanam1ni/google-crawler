@@ -268,6 +268,7 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
 
       uploaded_keywords = %Plug.Upload{
         path: "test/support/fixtures/data/keywords.csv",
+        content_type: "text/csv",
         filename: "keywords.csv"
       }
 
@@ -281,6 +282,54 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
       keywords = Keyword |> Repo.all()
 
       assert length(keywords) == 3
+    end
+
+    test "returns error when imports invalid file type", %{conn: conn} do
+      user = insert(:user)
+
+      reject(GoogleCrawler.Keywords.ScraperSupervisor, :start_child, 1)
+
+      uploaded_file = %Plug.Upload{content_type: "application/pdf"}
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_file})
+
+      assert json_response(conn, 400) == %{
+               "code" => "bad_request",
+               "object" => "error"
+             }
+
+      assert Repo.all(Keyword) == []
+
+      verify!()
+    end
+
+    test "returns error when imported CSV file is invalid", %{conn: conn} do
+      user = insert(:user)
+
+      reject(GoogleCrawler.Keywords.ScraperSupervisor, :start_child, 1)
+
+      uploaded_keywords = %Plug.Upload{
+        path: "test/support/fixtures/data/invalid_keywords.csv",
+        content_type: "text/csv",
+        filename: "invalid_keywords.csv"
+      }
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_keywords})
+
+      assert json_response(conn, 400) == %{
+               "code" => "bad_request",
+               "object" => "error"
+             }
+
+      assert Repo.all(Keyword) == []
+
+      verify!()
     end
   end
 end
