@@ -32,7 +32,7 @@ defmodule GoogleCrawlerWeb.ErrorHandler do
       end)
     end)
     |> Enum.map(fn {attribute, message} ->
-      formatted_attribute = Recase.to_sentence(Atom.to_string(attribute))
+      formatted_attribute = Phoenix.Naming.humanize(attribute)
 
       "#{formatted_attribute} #{message}"
     end)

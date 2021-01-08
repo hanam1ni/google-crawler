@@ -53,7 +53,8 @@ defmodule GoogleCrawlerWeb.ErrorHandlerTest do
         types: %{title: :string, user_id: :string}
       }
 
-      assert ErrorHandler.full_message(changeset) === "Title should be at least 6 characters, User id can't be blank"
+      assert ErrorHandler.full_message(changeset) ===
+               "Title should be at least 6 characters, User can't be blank"
     end
   end
 end
