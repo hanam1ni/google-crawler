@@ -97,6 +97,25 @@ defmodule GoogleCrawlerWeb.KeywordControllerTest do
       |> login_as(user)
       |> post(Routes.keyword_path(conn, :create), %{title: keyword_title})
     end
+
+    test "redirects to keyword new page with error message if added keyword title already exists",
+         %{conn: conn} do
+      user = insert(:user)
+      keyword_title = Faker.Lorem.word()
+      insert(:keyword, title: keyword_title, user: user)
+
+      reject(GoogleCrawler.Keywords.ScraperSupervisor, :start_child, 1)
+
+      conn =
+        conn
+        |> login_as(user)
+        |> post(Routes.keyword_path(conn, :create), %{title: keyword_title})
+
+      assert redirected_to(conn, 302) === Routes.keyword_path(conn, :new)
+      assert get_flash(conn, :error) === "Title has already been taken"
+
+      verify!()
+    end
   end
 
   describe "import/2" do
