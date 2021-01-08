@@ -1,6 +1,5 @@
 defmodule GoogleCrawler.Keywords.KeywordImporter do
   @file_content_type "text/csv"
-  @keyword_separator ?,
 
   alias GoogleCrawler.{Keywords, Repo}
   alias GoogleCrawler.Keywords.KeywordImportError
@@ -16,7 +15,7 @@ defmodule GoogleCrawler.Keywords.KeywordImporter do
   defp decode_csv(keyword_path) do
     keyword_path
     |> File.stream!()
-    |> CSV.decode(separator: @keyword_separator)
+    |> CSV.decode()
   end
 
   defp do_import(csv_stream, user_id) do

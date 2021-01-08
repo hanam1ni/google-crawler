@@ -296,10 +296,10 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
         |> login_as(user)
         |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_file})
 
-      assert %{
+      assert json_response(conn, 400) == %{
                "code" => "bad_request",
                "object" => "error"
-             } = json_response(conn, 400)
+             }
 
       assert Repo.all(Keyword) == []
 
@@ -322,10 +322,10 @@ defmodule GoogleCrawlerWeb.Api.KeywordControllerTest do
         |> login_as(user)
         |> post(Routes.keyword_import_path(conn, :import), %{keywords: uploaded_keywords})
 
-      assert %{
+      assert json_response(conn, 400) == %{
                "code" => "bad_request",
                "object" => "error"
-             } = json_response(conn, 400)
+             }
 
       assert Repo.all(Keyword) == []
 
